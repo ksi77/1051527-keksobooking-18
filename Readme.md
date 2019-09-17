@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ксения Косыгина](https://up.htmlacademy.ru/javascript/18/user/1051527).
-* Наставник: `Неизвестно`.
+* Наставник: [Никита Пиковец](https://htmlacademy.ru/profile/id503133).
 
 ---
 
