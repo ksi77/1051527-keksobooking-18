@@ -1,6 +1,6 @@
 'use strict';
 // Напишите функцию для создания массива из 8 сгенерированных JS объектов. Каждый объект массива ‐ описание похожего объявления неподалёку. Структура объектов должна быть следующей:
-var OBJECT_COUNT = 8;
+var OFFER_COUNT = 8;
 
 var PHOTO_FILES = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -10,7 +10,7 @@ var PHOTO_FILES = [
 
 var TIMES_OF_CHECK = ['12:00', '13:00', '14:00'];
 var TITLE = 'Предложение №';
-var TYPE_OF_HOUSE = ['palace', 'flat', 'house', 'bungalo'];
+var TYPES_OF_HOUSE = ['palace', 'flat', 'house', 'bungalo'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var LETTERS = 'абвгдеёжзийклмнопрстуфхцчшщэюя   ';
 var AVATAR_FILE_PREFIX = 'img/avatars/user';
@@ -57,10 +57,10 @@ var getRandomArray = function (array, maxlength, uniqueElements) {
   return newArray;
 };
 
-var createObjectList = function (objectListLength) {
-  var objectList = [];
-  for (var i = 0; i < objectListLength; i++) {
-    objectList.push({
+var createOffersList = function (offersListLength) {
+  var offersList = [];
+  for (var i = 0; i < offersListLength; i++) {
+    offersList.push({
       author: {
         // Например, 01, 02 и т. д. Адреса изображений не повторяются
         avatar: getRandomElement(avatarFiles, true)
@@ -69,7 +69,7 @@ var createObjectList = function (objectListLength) {
         title: TITLE + (i + 1),
         address: '' + getRandomNumberBetween(100, 999) + ', ' + getRandomNumberBetween(100, 999),
         price: getRandomNumberBetween(200, 1000) + 'EUR',
-        type: getRandomElement(TYPE_OF_HOUSE),
+        type: getRandomElement(TYPES_OF_HOUSE),
         rooms: getRandomNumberBetween(1, 10),
         guests: getRandomNumberBetween(1, 10),
         checkin: getRandomElement(TIMES_OF_CHECK),
@@ -85,22 +85,8 @@ var createObjectList = function (objectListLength) {
     }
     );
   }
-  return objectList;
+  return offersList;
 };
-
-// На основе данных, созданных в первом пункте, создайте DOM-элементы, соответствующие меткам на карте, и заполните их данными из массива.
-// Итоговую разметку метки .map__pin можно взять из шаблона #pin.
-var pinsList = document.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin').content;
-var similarPin = pinTemplate.querySelector('.map__pin');
-var PIN_WIDTH = 50; // Не знаю, как получить из DOM
-var PIN_HEIGHT = 70;
-
-var mapBlock = document.querySelector('.map');
-mapBlock.classList.remove('map--faded');
-var BLOCK_WIDTH = mapBlock.scrollWidth;
-var avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
-var objects = createObjectList(OBJECT_COUNT);
 
 var renderNewPin = function (object) {
   var newPin = similarPin.cloneNode(true);
@@ -112,8 +98,24 @@ var renderNewPin = function (object) {
   return newPin;
 };
 
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < objects.length; i++) {
-  fragment.appendChild(renderNewPin(objects[i]));
-}
-pinsList.appendChild(fragment);
+var renderOfferPins = function (offers) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < offers.length; i++) {
+    fragment.appendChild(renderNewPin(offers[i]));
+  }
+  pinsList.appendChild(fragment);
+};
+
+var pinsList = document.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content;
+var similarPin = pinTemplate.querySelector('.map__pin');
+var PIN_WIDTH = similarPin.clientWidth;
+var PIN_HEIGHT = similarPin.clientHeight;
+
+var mapBlock = document.querySelector('.map');
+mapBlock.classList.remove('map--faded');
+var BLOCK_WIDTH = mapBlock.clientWidth;
+var avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
+var offers = createOffersList(OFFER_COUNT);
+
+renderOfferPins(offers);
