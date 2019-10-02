@@ -110,10 +110,10 @@ var renderNewPin = function (offer) {
   return newPin;
 };
 
-var renderOffersList = function () {
+var renderOffersList = function (offersList) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offers.length; i++) {
-    fragment.appendChild(renderNewPin(offers[i]));
+    fragment.appendChild(renderNewPin(offersList[i]));
   }
   pinsList.appendChild(fragment);
 };
@@ -122,4 +122,4 @@ mapBlock.classList.remove('map--faded');
 avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
 offers = createOffersList(OFFERS_COUNT);
 
-renderOffersList();
+renderOffersList(offers);
