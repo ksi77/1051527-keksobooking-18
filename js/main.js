@@ -1,6 +1,6 @@
 'use strict';
 // Напишите функцию для создания массива из 8 сгенерированных JS объектов. Каждый объект массива ‐ описание похожего объявления неподалёку. Структура объектов должна быть следующей:
-var OFFER_COUNT = 8;
+var OFFERS_COUNT = 8;
 
 var PHOTO_FILES = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -15,6 +15,18 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditio
 var LETTERS = 'абвгдеёжзийклмнопрстуфхцчшщэюя   ';
 var AVATAR_FILE_PREFIX = 'img/avatars/user';
 var DESCRIPTION_LENGTH = 500;
+
+var pinsList = document.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content;
+var similarPin = pinTemplate.querySelector('.map__pin');
+var PIN_WIDTH = similarPin.clientWidth;
+var PIN_HEIGHT = similarPin.clientHeight;
+
+var mapBlock = document.querySelector('.map');
+BLOCK_WIDTH = mapBlock.clientWidth;
+var BLOCK_WIDTH;
+var avatarFiles;
+var offers;
 
 var createRandomString = function (letters, maxLength) {
   var stringLength = getRandomNumberBetween(100, maxLength);
@@ -88,17 +100,17 @@ var createOffersList = function (offersListLength) {
   return offersList;
 };
 
-var renderNewPin = function (object) {
+var renderNewPin = function (offer) {
   var newPin = similarPin.cloneNode(true);
   var newPinImg = newPin.querySelector('img');
-  newPinImg.src = object.author.avatar;
-  newPinImg.alt = object.author.title;
-  newPin.style.left = object.location.x + 'px';
-  newPin.style.top = object.location.y + 'px';
+  newPinImg.src = offer.author.avatar;
+  newPinImg.alt = offer.author.title;
+  newPin.style.left = offer.location.x + 'px';
+  newPin.style.top = offer.location.y + 'px';
   return newPin;
 };
 
-var renderOfferPins = function (offers) {
+var renderOffersList = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offers.length; i++) {
     fragment.appendChild(renderNewPin(offers[i]));
@@ -106,16 +118,8 @@ var renderOfferPins = function (offers) {
   pinsList.appendChild(fragment);
 };
 
-var pinsList = document.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin').content;
-var similarPin = pinTemplate.querySelector('.map__pin');
-var PIN_WIDTH = similarPin.clientWidth;
-var PIN_HEIGHT = similarPin.clientHeight;
-
-var mapBlock = document.querySelector('.map');
 mapBlock.classList.remove('map--faded');
-var BLOCK_WIDTH = mapBlock.clientWidth;
-var avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
-var offers = createOffersList(OFFER_COUNT);
+avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
+offers = createOffersList(OFFERS_COUNT);
 
-renderOfferPins(offers);
+renderOffersList();
