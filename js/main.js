@@ -13,7 +13,7 @@ var TITLE = 'Предложение №';
 var TYPES_OF_HOUSE = ['palace', 'flat', 'house', 'bungalo'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var LETTERS = 'абвгдеёжзийклмнопрстуфхцчшщэюя   ';
-var AVATAR_FILE_PREFIX = 'img/avatars/user';
+var AVATAR_FILE_TEMPLATE = 'img/avatars/user{{x}}.png';
 var DESCRIPTION_LENGTH = 500;
 
 var pinsList = document.querySelector('.map__pins');
@@ -24,7 +24,7 @@ var PIN_HEIGHT = similarPin.clientHeight;
 
 var mapBlock = document.querySelector('.map');
 var BLOCK_WIDTH = mapBlock.clientWidth;
-var avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
+var avatarFiles = createFileList(AVATAR_FILE_TEMPLATE, 8);
 var offers = createOffersList(OFFERS_COUNT);
 
 function createRandomString(letters, maxLength) {
@@ -37,10 +37,10 @@ function createRandomString(letters, maxLength) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function createFileList(fileTemplatePrefix, fileCount, fileExtention) {
+function createFileList(fileTemplate, fileCount) {
   var files = [];
   for (var i = 0; i < fileCount; i++) {
-    files.push(fileTemplatePrefix + '0' + (i + 1) + fileExtention);
+    files.push(fileTemplate.replace('{{x}}', '0' + (i + 1)));
   }
   return files;
 }
@@ -60,9 +60,9 @@ function getRandomNumberBetween(minNumber, maxNumber) {
 
 function getRandomArray(array, maxlength, uniqueElements) {
   var arrayCopy = array;
-  var newArraylength = (uniqueElements === true || maxlength > arrayCopy.lengtn) ? getRandomNumberBetween(1, arrayCopy.length) : maxlength;
+  var newArrayLength = (uniqueElements === true || maxlength > arrayCopy.lengtn) ? getRandomNumberBetween(1, arrayCopy.length) : maxlength;
   var newArray = [];
-  for (var i = 0; i < newArraylength; i++) {
+  for (var i = 0; i < newArrayLength; i++) {
     newArray.push(getRandomElement(arrayCopy, uniqueElements));
   }
   return newArray;
@@ -111,7 +111,7 @@ function renderNewPin(offer) {
 
 function renderOffersList(offersList) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < offers.length; i++) {
+  for (var i = 0; i < offersList.length; i++) {
     fragment.appendChild(renderNewPin(offersList[i]));
   }
   pinsList.appendChild(fragment);
