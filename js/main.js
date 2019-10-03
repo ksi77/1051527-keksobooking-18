@@ -23,12 +23,11 @@ var PIN_WIDTH = similarPin.clientWidth;
 var PIN_HEIGHT = similarPin.clientHeight;
 
 var mapBlock = document.querySelector('.map');
-BLOCK_WIDTH = mapBlock.clientWidth;
-var BLOCK_WIDTH;
-var avatarFiles;
-var offers;
+var BLOCK_WIDTH = mapBlock.clientWidth;
+var avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
+var offers = createOffersList(OFFERS_COUNT);
 
-var createRandomString = function (letters, maxLength) {
+function createRandomString(letters, maxLength) {
   var stringLength = getRandomNumberBetween(100, maxLength);
   var string = '';
   for (var i = 0; i < stringLength - 1; i++) {
@@ -36,30 +35,30 @@ var createRandomString = function (letters, maxLength) {
   }
   string = string + '.';
   return string.charAt(0).toUpperCase() + string.slice(1);
-};
+}
 
-var createFileList = function (fileTemplatePrefix, fileCount, fileExtention) {
+function createFileList(fileTemplatePrefix, fileCount, fileExtention) {
   var files = [];
   for (var i = 0; i < fileCount; i++) {
     files.push(fileTemplatePrefix + '0' + (i + 1) + fileExtention);
   }
   return files;
-};
+}
 
-var getRandomElement = function (array, uniqueElement) {
+function getRandomElement(array, uniqueElement) {
   var randomIndex = Math.round((array.length - 1) * Math.random());
   var randomElement = array[randomIndex];
   if (uniqueElement === true) {
     array.splice(randomIndex, 1);
   }
   return randomElement;
-};
+}
 
-var getRandomNumberBetween = function (minNumber, maxNumber) {
+function getRandomNumberBetween(minNumber, maxNumber) {
   return Math.round(minNumber + Math.random() * (maxNumber - minNumber));
-};
+}
 
-var getRandomArray = function (array, maxlength, uniqueElements) {
+function getRandomArray(array, maxlength, uniqueElements) {
   var arrayCopy = array;
   var newArraylength = (uniqueElements === true || maxlength > arrayCopy.lengtn) ? getRandomNumberBetween(1, arrayCopy.length) : maxlength;
   var newArray = [];
@@ -67,9 +66,9 @@ var getRandomArray = function (array, maxlength, uniqueElements) {
     newArray.push(getRandomElement(arrayCopy, uniqueElements));
   }
   return newArray;
-};
+}
 
-var createOffersList = function (offersListLength) {
+function createOffersList(offersListLength) {
   var offersList = [];
   for (var i = 0; i < offersListLength; i++) {
     offersList.push({
@@ -98,9 +97,9 @@ var createOffersList = function (offersListLength) {
     );
   }
   return offersList;
-};
+}
 
-var renderNewPin = function (offer) {
+function renderNewPin(offer) {
   var newPin = similarPin.cloneNode(true);
   var newPinImg = newPin.querySelector('img');
   newPinImg.src = offer.author.avatar;
@@ -108,18 +107,15 @@ var renderNewPin = function (offer) {
   newPin.style.left = offer.location.x + 'px';
   newPin.style.top = offer.location.y + 'px';
   return newPin;
-};
+}
 
-var renderOffersList = function (offersList) {
+function renderOffersList(offersList) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offers.length; i++) {
     fragment.appendChild(renderNewPin(offersList[i]));
   }
   pinsList.appendChild(fragment);
-};
+}
 
 mapBlock.classList.remove('map--faded');
-avatarFiles = createFileList(AVATAR_FILE_PREFIX, 8, '.png');
-offers = createOffersList(OFFERS_COUNT);
-
 renderOffersList(offers);
