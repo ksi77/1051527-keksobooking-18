@@ -215,8 +215,8 @@ mapPinMain.addEventListener('mousedown', function () {
 mapPinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     activateElements();
-    setAddress(mapPinMain);
   }
 });
 
 setValidationCapacity();
+setAddress(mapPinMain);
