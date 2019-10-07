@@ -149,7 +149,7 @@ function disableElements(arrayOfListsElements, disabled) {
 function setAddress(pin) {
   var addressX = 1 * (pin.style.top).replace('px', '') + pin.clientWidth / 2;
   var addressY = 1 * (pin.style.left).replace('px', '') + pin.clientHeight;
-  address.textContent = Math.round(addressX) + ', ' + addressY;
+  address.value = Math.round(addressX) + ', ' + addressY;
 }
 
 function setValidationCapacity() {
@@ -205,6 +205,7 @@ inputRoomNumber.addEventListener('change', function () {
 });
 
 disableElements([inputFields, selectFields], true);
+
 // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние.
 mapPinMain.addEventListener('mousedown', function () {
   activateElements();
@@ -213,7 +214,8 @@ mapPinMain.addEventListener('mousedown', function () {
 
 mapPinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    disableElements([inputFields, selectFields, adForm, mapFilters], false);
+    activateElements();
+    setAddress(mapPinMain);
   }
 });
 
