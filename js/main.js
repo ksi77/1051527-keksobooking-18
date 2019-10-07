@@ -184,8 +184,8 @@ function setValidationCapacity() {
     // 100 комнат — «не для гостей».
     case '100': // 100 комнат tttf
       capacity1.disabled = true;
-      capacity2.disabled = false;
-      capacity3.disabled = false;
+      capacity2.disabled = true;
+      capacity3.disabled = true;
       capacity0.disabled = false;
       break;
   }
