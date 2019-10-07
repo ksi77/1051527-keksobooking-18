@@ -153,35 +153,40 @@ function setAddress(pin) {
 }
 
 function setValidationCapacity() {
-  var n = inputRoomNumber.options.selectedIndex;
-  switch (n) {
+  var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;
+  var capacity1 = inputCapacity.querySelector('[value="1"]');
+  var capacity2 = inputCapacity.querySelector('[value="2"]');
+  var capacity3 = inputCapacity.querySelector('[value="3"]');
+  var capacity0 = inputCapacity.querySelector('[value="0"]');
+
+  switch (selectedRoomNumber) {
     // 1 комната — «для 1 гостя»;
-    case 0: // 1 комната
-      inputCapacity.options[0].disabled = false;
-      inputCapacity.options[1].disabled = true;
-      inputCapacity.options[2].disabled = true;
-      inputCapacity.options[3].disabled = true;
+    case '1': // 1 комната
+      capacity1.disabled = false;
+      capacity2.disabled = true;
+      capacity3.disabled = true;
+      capacity0.disabled = true;
       break;
     // 2 комнаты — «для 2 гостей» или «для 1 гостя»;
-    case 1: // 2 комнаты
-      inputCapacity.options[0].disabled = false;
-      inputCapacity.options[1].disabled = false;
-      inputCapacity.options[2].disabled = true;
-      inputCapacity.options[3].disabled = true;
+    case '2': // 2 комнаты fftt
+      capacity1.disabled = false;
+      capacity2.disabled = false;
+      capacity3.disabled = true;
+      capacity0.disabled = true;
       break;
     // 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
-    case 2: // 3 комнаты
-      inputCapacity.options[0].disabled = false;
-      inputCapacity.options[1].disabled = false;
-      inputCapacity.options[2].disabled = false;
-      inputCapacity.options[3].disabled = true;
+    case '3': // 3 комнаты ffft
+      capacity1.disabled = false;
+      capacity2.disabled = false;
+      capacity3.disabled = false;
+      capacity0.disabled = true;
       break;
     // 100 комнат — «не для гостей».
-    case 3: // 100 комнат
-      inputCapacity.options[0].disabled = true;
-      inputCapacity.options[1].disabled = true;
-      inputCapacity.options[2].disabled = true;
-      inputCapacity.options[3].disabled = false;
+    case '100': // 100 комнат tttf
+      capacity1.disabled = true;
+      capacity2.disabled = false;
+      capacity3.disabled = false;
+      capacity0.disabled = false;
       break;
   }
   if (inputCapacity.selectedOptions[0].disabled) {
@@ -212,11 +217,4 @@ mapPinMain.addEventListener('keydown', function (evt) {
   }
 });
 
-
-
-// Последним шагом добавим поддержку перевода страницы в активный режим с клавиатуры.
-// Если сейчас попробовать до tab’ать до метки и нажать клавишу Enter,
-// то страница не будет переведена в активный режим.
-// Для решения этой задачи нам потребуется установить обработчик keydown для метки.
-// При наступлении события мы должны проверить нажатую клавишу
-//  и если пользователь нажал Enter — перевести страницу в активный режим.
+setValidationCapacity();
