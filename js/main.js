@@ -130,11 +130,14 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var inputRoomNumber = adForm.querySelector('#room_number');
 var inputCapacity = adForm.querySelector('#capacity');
 
-function activateElements() {
-  mapBlock.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
-  mapFilters.classList.remove('map-filters--disabled');
-  disableElements([inputFields, selectFields], false);
+function activateElements(pin) {
+  if (adForm.classList.contains('ad-form--disabled')) {
+    mapBlock.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    mapFilters.classList.remove('map-filters--disabled');
+    disableElements([inputFields, selectFields], false);
+    setAddress(pin);
+  }// Иначе форма уже активна
 }
 
 function disableElements(arrayOfListsElements, disabled) {
@@ -146,10 +149,10 @@ function disableElements(arrayOfListsElements, disabled) {
   }
 }
 
-function setAddress(pin) {
+function setAddress(pin, toCenter) {
   var addressX = 1 * (pin.style.top).replace('px', '') + pin.clientWidth / 2;
-  var addressY = 1 * (pin.style.left).replace('px', '') + pin.clientHeight;
-  address.value = Math.round(addressX) + ', ' + addressY;
+  var addressY = 1 * (pin.style.left).replace('px', '') + 1 * ((toCenter) ? pin.clientHeight / 2 : pin.clientHeight);
+  address.value = Math.round(addressX) + ', ' + Math.round(addressY);
 }
 
 function setValidationCapacity() {
@@ -208,15 +211,14 @@ disableElements([inputFields, selectFields], true);
 
 // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние.
 mapPinMain.addEventListener('mousedown', function () {
-  activateElements();
-  setAddress(mapPinMain);
+  activateElements(mapPinMain);
 });
 
 mapPinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
-    activateElements();
+    activateElements(mapPinMain);
   }
 });
 
 setValidationCapacity();
-setAddress(mapPinMain);
+setAddress(mapPinMain, true);
