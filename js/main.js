@@ -1,4 +1,5 @@
 'use strict';
+var ENTER_KEYCODE = 13;
 // Напишите функцию для создания массива из 8 сгенерированных JS объектов. Каждый объект массива ‐ описание похожего объявления неподалёку. Структура объектов должна быть следующей:
 var OFFERS_COUNT = 8;
 
@@ -19,6 +20,7 @@ var DESCRIPTION_LENGTH = 500;
 var pinsList = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin').content;
 var similarPin = pinTemplate.querySelector('.map__pin');
+var address = document.querySelector('#address');
 var PIN_WIDTH = similarPin.clientWidth;
 var PIN_HEIGHT = similarPin.clientHeight;
 
@@ -117,5 +119,106 @@ function renderOffersList(offersList) {
   pinsList.appendChild(fragment);
 }
 
-mapBlock.classList.remove('map--faded');
-renderOffersList(offers);
+// renderOffersList(offers);
+// Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled,
+// добавленного на них или на их родительские блоки fieldset;
+var adForm = document.querySelector('.ad-form');
+var inputFields = adForm.querySelectorAll('input');
+var selectFields = adForm.querySelectorAll('select');
+var mapFilters = document.querySelector('.map__filters');
+var mapPinMain = document.querySelector('.map__pin--main');
+var inputRoomNumber = adForm.querySelector('#room_number');
+var inputCapacity = adForm.querySelector('#capacity');
+
+function activateElements(pin) {
+  if (adForm.classList.contains('ad-form--disabled')) {
+    mapBlock.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    mapFilters.classList.remove('map-filters--disabled');
+    disableElements([inputFields, selectFields], false);
+    setAddress(pin);
+  }// Иначе форма уже активна
+}
+
+function disableElements(arrayOfListsElements, disabled) {
+  for (var i = 0; i < arrayOfListsElements.length; i++) {
+    var currentList = arrayOfListsElements[i];
+    for (var j = 0; j < currentList.length; j++) {
+      currentList[j].disabled = disabled;
+    }
+  }
+}
+
+function setAddress(pin, toCenter) {
+  var addressX = 1 * (pin.style.top).replace('px', '') + pin.clientWidth / 2;
+  var addressY = 1 * (pin.style.left).replace('px', '') + 1 * ((toCenter) ? pin.clientHeight / 2 : pin.clientHeight);
+  address.value = Math.round(addressX) + ', ' + Math.round(addressY);
+}
+
+function setValidationCapacity() {
+  var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;
+  var capacity1 = inputCapacity.querySelector('[value="1"]');
+  var capacity2 = inputCapacity.querySelector('[value="2"]');
+  var capacity3 = inputCapacity.querySelector('[value="3"]');
+  var capacity0 = inputCapacity.querySelector('[value="0"]');
+
+  switch (selectedRoomNumber) {
+    // 1 комната — «для 1 гостя»;
+    case '1': // 1 комната
+      capacity1.disabled = false;
+      capacity2.disabled = true;
+      capacity3.disabled = true;
+      capacity0.disabled = true;
+      break;
+    // 2 комнаты — «для 2 гостей» или «для 1 гостя»;
+    case '2': // 2 комнаты fftt
+      capacity1.disabled = false;
+      capacity2.disabled = false;
+      capacity3.disabled = true;
+      capacity0.disabled = true;
+      break;
+    // 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
+    case '3': // 3 комнаты ffft
+      capacity1.disabled = false;
+      capacity2.disabled = false;
+      capacity3.disabled = false;
+      capacity0.disabled = true;
+      break;
+    // 100 комнат — «не для гостей».
+    case '100': // 100 комнат tttf
+      capacity1.disabled = true;
+      capacity2.disabled = true;
+      capacity3.disabled = true;
+      capacity0.disabled = false;
+      break;
+  }
+  if (inputCapacity.selectedOptions[0].disabled) {
+    inputCapacity.setCustomValidity('Выберите доступное количество гостей');
+  }
+}
+
+inputCapacity.addEventListener('change', function () {
+  if (!inputCapacity.selectedOptions[0].disabled) {
+    inputCapacity.setCustomValidity('');
+  }
+});
+
+inputRoomNumber.addEventListener('change', function () {
+  setValidationCapacity();
+});
+
+disableElements([inputFields, selectFields], true);
+
+// Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние.
+mapPinMain.addEventListener('mousedown', function () {
+  activateElements(mapPinMain);
+});
+
+mapPinMain.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activateElements(mapPinMain);
+  }
+});
+
+setValidationCapacity();
+setAddress(mapPinMain, true);
