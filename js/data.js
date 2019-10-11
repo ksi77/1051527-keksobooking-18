@@ -14,7 +14,10 @@
   var LETTERS = 'абвгдеёжзийклмнопрстуфхцчшщэюя   ';
   var AVATAR_FILE_TEMPLATE = 'img/avatars/user{{x}}.png';
   var DESCRIPTION_LENGTH = 500;
-  var avatarFiles = createFileList(AVATAR_FILE_TEMPLATE, 8);
+
+  function getRandomNumberBetween(minNumber, maxNumber) {
+    return Math.round(minNumber + Math.random() * (maxNumber - minNumber));
+  }
 
   function createRandomString(letters, maxLength) {
     var stringLength = getRandomNumberBetween(100, maxLength);
@@ -43,10 +46,6 @@
     return randomElement;
   }
 
-  function getRandomNumberBetween(minNumber, maxNumber) {
-    return Math.round(minNumber + Math.random() * (maxNumber - minNumber));
-  }
-
   function getRandomArray(array, maxlength, uniqueElements) {
     var arrayCopy = array;
     var newArrayLength = (uniqueElements === true || maxlength > arrayCopy.lengtn) ? getRandomNumberBetween(1, arrayCopy.length) : maxlength;
@@ -62,7 +61,6 @@
     for (var i = 0; i < offersListLength; i++) {
       offersList.push({
         author: {
-          // Например, 01, 02 и т. д. Адреса изображений не повторяются
           avatar: getRandomElement(avatarFiles, true)
         },
         offer: {
@@ -88,5 +86,9 @@
     return offersList;
   }
 
-  window.data.offers = createOffersList(OFFERS_COUNT);
+  var avatarFiles = createFileList(AVATAR_FILE_TEMPLATE, 8);
+  var offers = createOffersList(OFFERS_COUNT);
+  window.data = {
+    offers: offers
+  };
 })();

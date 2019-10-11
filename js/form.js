@@ -1,8 +1,7 @@
 'use strict';
 (function () {
-  var adForm = document.querySelector('.ad-form');
-  var inputRoomNumber = adForm.querySelector('#room_number');
-  var inputCapacity = adForm.querySelector('#capacity');
+  var inputRoomNumber = window.constants.AD_FORM.querySelector('#room_number');
+  var inputCapacity = window.constants.AD_FORM.querySelector('#capacity');
 
   function setValidationCapacity() {
     var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;

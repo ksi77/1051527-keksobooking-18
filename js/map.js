@@ -1,39 +1,26 @@
 'use strict';
 (function () {
-  var mapBlock = document.querySelector('.map');
-  var pinsList = document.querySelector('.map__pins');
-  var address = document.querySelector('#address');
-
-  function createNewPin(offer) {
-    var newPin = window.constants.PIN_TEMPLATE.cloneNode(true);
-    var newPinImg = newPin.querySelector('img');
-    newPinImg.src = offer.author.avatar;
-    newPinImg.alt = offer.author.title;
-    newPin.style.left = offer.location.x + 'px';
-    newPin.style.top = offer.location.y + 'px';
-    return newPin;
-  }
+  var pinsList = window.constants.MAP_BLOCK.querySelector('.map__pins');
+  var address = window.constants.AD_FORM.querySelector('#address');
 
   function renderPins(offersList) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < offersList.length; i++) {
-      fragment.appendChild(createNewPin(offersList[i]));
+      fragment.appendChild(window.pin.createNewPin(offersList[i]));
     }
     pinsList.appendChild(fragment);
   }
-  // Все <input> и <select> формы .ad-form заблокированы с помощью атрибута disabled,
-  // добавленного на них или на их родительские блоки fieldset;
-  var adForm = document.querySelector('.ad-form');
-  var inputFields = adForm.querySelectorAll('input');
-  var selectFields = adForm.querySelectorAll('select');
-  var mapFilters = document.querySelector('.map__filters');
-  var mapPinMain = document.querySelector('.map__pin--main');
+
+  var inputFields = window.constants.AD_FORM.querySelectorAll('input');
+  var selectFields = window.constants.AD_FORM.querySelectorAll('select');
+  var mapFilters = window.constants.MAP_BLOCK.querySelector('.map__filters');
+  var mapPinMain = window.constants.MAP_BLOCK.querySelector('.map__pin--main');
 
 
   function activateElements(pin) {
-    if (adForm.classList.contains('ad-form--disabled')) {
-      mapBlock.classList.remove('map--faded');
-      adForm.classList.remove('ad-form--disabled');
+    if (window.constants.AD_FORM.classList.contains('ad-form--disabled')) {
+      window.constants.MAP_BLOCK.classList.remove('map--faded');
+      window.constants.AD_FORM.classList.remove('ad-form--disabled');
       mapFilters.classList.remove('map-filters--disabled');
       disableElements([inputFields, selectFields], false);
       setAddress(pin);
