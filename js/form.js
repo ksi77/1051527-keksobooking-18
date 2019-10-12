@@ -1,7 +1,13 @@
 'use strict';
-(function () {
-  var inputRoomNumber = window.constants.AD_FORM.querySelector('#room_number');
-  var inputCapacity = window.constants.AD_FORM.querySelector('#capacity');
+window.form = (function () {
+  var adForm = window.constants.AD_FORM;
+  var inputRoomNumber = adForm.querySelector('#room_number');
+  var inputCapacity = adForm.querySelector('#capacity');
+
+  var arrayOfListsElements = [
+    adForm.querySelectorAll('input'),
+    adForm.querySelectorAll('select')
+  ];
 
   function setValidationCapacity() {
     var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;
@@ -56,4 +62,21 @@
   });
 
   setValidationCapacity();
+
+  return {
+    activate: function (active) {
+      if (active) {
+        adForm.classList.remove('ad-form--disabled');
+      } else {
+        adForm.classList.add('ad-form--disabled');
+      }
+
+      for (var i = 0; i < arrayOfListsElements.length; i++) {
+        var currentList = arrayOfListsElements[i];
+        for (var j = 0; j < currentList.length; j++) {
+          currentList[j].disabled = !active;
+        }
+      }
+    }
+  };
 })();

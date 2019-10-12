@@ -4,6 +4,7 @@
                     .content
                     .querySelector('.map__pin');
   var mapBlock = document.querySelector('.map');
+  var adForm = document.querySelector('.ad-form');
 
   window.constants = {
     ENTER_KEYCODE: 13,
@@ -12,6 +13,6 @@
     BLOCK_WIDTH: mapBlock.clientWidth,
     MAP_BLOCK: mapBlock,
     PIN_TEMPLATE: pinTemplate,
-    AD_FORM: document.querySelector('.ad-form')
+    AD_FORM: adForm
   };
 })();

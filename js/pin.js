@@ -1,7 +1,7 @@
 'use strict';
 window.pin = function () {
   return {
-    createNewPin: function (offer) {
+    create: function (offer) {
       var newPin = window.constants.PIN_TEMPLATE.cloneNode(true);
       var newPinImg = newPin.querySelector('img');
       newPinImg.src = offer.author.avatar;

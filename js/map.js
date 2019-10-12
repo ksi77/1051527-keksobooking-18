@@ -6,34 +6,24 @@
   function renderPins(offersList) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < offersList.length; i++) {
-      fragment.appendChild(window.pin.createNewPin(offersList[i]));
+      fragment.appendChild(window.pin.create(offersList[i]));
     }
     pinsList.appendChild(fragment);
   }
 
-  var inputFields = window.constants.AD_FORM.querySelectorAll('input');
-  var selectFields = window.constants.AD_FORM.querySelectorAll('select');
+
   var mapFilters = window.constants.MAP_BLOCK.querySelector('.map__filters');
   var mapPinMain = window.constants.MAP_BLOCK.querySelector('.map__pin--main');
 
 
   function activateElements(pin) {
-    if (window.constants.AD_FORM.classList.contains('ad-form--disabled')) {
+    if (window.constants.MAP_BLOCK.classList.contains('map--faded')) {
       window.constants.MAP_BLOCK.classList.remove('map--faded');
-      window.constants.AD_FORM.classList.remove('ad-form--disabled');
       mapFilters.classList.remove('map-filters--disabled');
-      disableElements([inputFields, selectFields], false);
+      window.form.activate(true);
       setAddress(pin);
+      mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
     }// Иначе форма уже активна
-  }
-
-  function disableElements(arrayOfListsElements, disabled) {
-    for (var i = 0; i < arrayOfListsElements.length; i++) {
-      var currentList = arrayOfListsElements[i];
-      for (var j = 0; j < currentList.length; j++) {
-        currentList[j].disabled = disabled;
-      }
-    }
   }
 
   function setAddress(pin, toCenter) {
@@ -47,14 +37,16 @@
     activateElements(mapPinMain);
   });
 
-  mapPinMain.addEventListener('keydown', function (evt) {
+  var mapPinMainKeydownHandler = function (evt) {
     if (evt.keyCode === window.constants.ENTER_KEYCODE) {
       activateElements(mapPinMain);
     }
-  });
+  };
+
+  mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
 
   // renderPins(window.data.offers);
   setAddress(mapPinMain, true);
-  disableElements([inputFields, selectFields], true);
+  window.form.activate(false);
 
 })();
