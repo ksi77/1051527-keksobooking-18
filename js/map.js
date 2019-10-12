@@ -22,7 +22,7 @@
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(pin);
-      mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
+      mapPinMain.removeEventListener('keydown', keydownMapPinMainHandler);
     }// Иначе форма уже активна
   }
 
@@ -37,13 +37,13 @@
     activateElements(mapPinMain);
   });
 
-  var mapPinMainKeydownHandler = function (evt) {
+  var keydownMapPinMainHandler = function (evt) {
     if (evt.keyCode === window.constants.ENTER_KEYCODE) {
       activateElements(mapPinMain);
     }
   };
 
-  mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
+  mapPinMain.addEventListener('keydown', keydownMapPinMainHandler);
 
   // renderPins(window.data.offers);
   setAddress(mapPinMain, true);
