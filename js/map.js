@@ -22,13 +22,13 @@
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(pin);
-      mapPinMain.removeEventListener('keydown', keydownMapPinMainHandler);
+      mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
     }// Иначе форма уже активна
   }
 
   function setAddress(pin, toCenter) {
-    var addressX = 1 * (pin.style.top).replace('px', '') + pin.clientWidth / 2;
-    var addressY = 1 * (pin.style.left).replace('px', '') + 1 * ((toCenter) ? pin.clientHeight / 2 : pin.clientHeight);
+    var addressX = pin.offsetleft + pin.clientWidth / 2;
+    var addressY = pin.offsettop + (toCenter) ? pin.clientHeight / 2 : pin.clientHeight;
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
   }
 
@@ -37,13 +37,13 @@
     activateElements(mapPinMain);
   });
 
-  var keydownMapPinMainHandler = function (evt) {
+  var mapPinMainKeydownHandler = function (evt) {
     if (evt.keyCode === window.constants.ENTER_KEYCODE) {
       activateElements(mapPinMain);
     }
   };
 
-  mapPinMain.addEventListener('keydown', keydownMapPinMainHandler);
+  mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
 
   // renderPins(window.data.offers);
   setAddress(mapPinMain, true);
