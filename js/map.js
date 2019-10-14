@@ -27,8 +27,8 @@
   }
 
   function setAddress(pin, toCenter) {
-    var addressX = pin.offsetleft + pin.clientWidth / 2;
-    var addressY = pin.offsettop + (toCenter) ? pin.clientHeight / 2 : pin.clientHeight;
+    var addressX = pin.offsetLeft + pin.clientWidth / 2;
+    var addressY = pin.offsetTop + (toCenter ? pin.clientHeight / 2 : pin.clientHeight);
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
   }
 

@@ -6,7 +6,8 @@ window.form = (function () {
 
   var arrayOfListsElements = [
     adForm.querySelectorAll('input'),
-    adForm.querySelectorAll('select')
+    adForm.querySelectorAll('select'),
+    adForm.querySelectorAll('textarea')
   ];
 
   function setValidationCapacity() {
