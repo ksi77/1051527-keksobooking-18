@@ -13,6 +13,7 @@ window.map = (function () {
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(pin);
+      window.backend.load(window.map.renderPins, window.backend.onError);
       mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
     }// Иначе форма уже активна
   }
@@ -21,14 +22,6 @@ window.map = (function () {
     var addressX = pin.offsetLeft + pin.clientWidth / 2;
     var addressY = pin.offsetTop + (toCenter ? pin.clientHeight / 2 : pin.clientHeight);
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
-  }
-
-  function renderPins(offersList) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < offersList.length; i++) {
-      fragment.appendChild(window.pin.create(offersList[i]));
-    }
-    pinsList.appendChild(fragment);
   }
 
   // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние.
@@ -42,32 +35,19 @@ window.map = (function () {
     }
   };
 
-  var onError = function (errorMessage) {
-    // Если при загрузке данных произошла ошибка запроса, покажите соответствующее
-    // сообщение в блоке main,
-    // используя блок #error из шаблона template
-    var errorTemplate = document.querySelector('#error')
-                        .content
-                        .querySelector('.error');
-    var errorBlock = errorTemplate.cloneNode(true);
-    errorBlock.querySelector('.error__message').textContent = errorMessage;
-    var mainBlock = document.querySelector('main');
-    mainBlock.appendChild(errorBlock);
-
-    var errorButton = errorBlock.querySelector('.error__button');
-    errorButton.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      mainBlock.lastChild.remove();
-      window.backend.load(renderPins, onError);
-    });
-  };
-
-
   mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
 
   setAddress(mapPinMain, true);
   window.form.activate(false);
 
-  window.backend.load(renderPins, onError);
 
+  return {
+    renderPins: function (offersList) {
+      var fragment = document.createDocumentFragment();
+      for (var i = 0; i < offersList.length; i++) {
+        fragment.appendChild(window.pin.create(offersList[i]));
+      }
+      pinsList.appendChild(fragment);
+    }
+  };
 })();

@@ -30,6 +30,25 @@ window.backend = (function () {
 
       xhr.open('GET', URL);
       xhr.send();
+    },
+    onError: function (errorMessage) {
+      // Если при загрузке данных произошла ошибка запроса, покажите соответствующее
+      // сообщение в блоке main,
+      // используя блок #error из шаблона template
+      var errorTemplate = document.querySelector('#error')
+                          .content
+                          .querySelector('.error');
+      var errorBlock = errorTemplate.cloneNode(true);
+      errorBlock.querySelector('.error__message').textContent = errorMessage;
+      var mainBlock = document.querySelector('main');
+      mainBlock.appendChild(errorBlock);
+
+      var errorButton = errorBlock.querySelector('.error__button');
+      errorButton.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        mainBlock.lastChild.remove();
+        window.backend.load(window.map.renderPins, window.backend.onError);
+      });
     }
   };
 })();

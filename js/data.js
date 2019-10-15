@@ -88,9 +88,9 @@
 
   var avatarFiles = createFileList(AVATAR_FILE_TEMPLATE, 8);
 
-  // var offers = createOffersList(OFFERS_COUNT);
-  // window.data = {
-  //  offers: offers
-  // };
+  var offers = createOffersList(OFFERS_COUNT);
+  window.data = {
+    offers: offers
+  };
 
 })();
