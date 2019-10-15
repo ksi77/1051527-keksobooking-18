@@ -1,16 +1,7 @@
 'use strict';
-(function () {
+window.map = (function () {
   var pinsList = window.constants.MAP_BLOCK.querySelector('.map__pins');
   var address = window.constants.AD_FORM.querySelector('#address');
-
-  function renderPins(offersList) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < offersList.length; i++) {
-      fragment.appendChild(window.pin.create(offersList[i]));
-    }
-    pinsList.appendChild(fragment);
-  }
-
 
   var mapFilters = window.constants.MAP_BLOCK.querySelector('.map__filters');
   var mapPinMain = window.constants.MAP_BLOCK.querySelector('.map__pin--main');
@@ -32,6 +23,14 @@
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
   }
 
+  function renderPins(offersList) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < offersList.length; i++) {
+      fragment.appendChild(window.pin.create(offersList[i]));
+    }
+    pinsList.appendChild(fragment);
+  }
+
   // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние.
   mapPinMain.addEventListener('mousedown', function () {
     activateElements(mapPinMain);
@@ -43,10 +42,32 @@
     }
   };
 
+  var onError = function (errorMessage) {
+    // Если при загрузке данных произошла ошибка запроса, покажите соответствующее
+    // сообщение в блоке main,
+    // используя блок #error из шаблона template
+    var errorTemplate = document.querySelector('#error')
+                        .content
+                        .querySelector('.error');
+    var errorBlock = errorTemplate.cloneNode(true);
+    errorBlock.querySelector('.error__message').textContent = errorMessage;
+    var mainBlock = document.querySelector('main');
+    mainBlock.appendChild(errorBlock);
+
+    var errorButton = errorBlock.querySelector('.error__button');
+    errorButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      mainBlock.lastChild.remove();
+      window.backend.load(renderPins, onError);
+    });
+  };
+
+
   mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
 
-  // renderPins(window.data.offers);
   setAddress(mapPinMain, true);
   window.form.activate(false);
+
+  window.backend.load(renderPins, onError);
 
 })();
