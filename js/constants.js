@@ -13,6 +13,11 @@
     BLOCK_WIDTH: mapBlock.clientWidth,
     MAP_BLOCK: mapBlock,
     PIN_TEMPLATE: pinTemplate,
-    AD_FORM: adForm
+    AD_FORM: adForm,
+    PIN_COUNT: 5,
+    MAP_FILTERS: {
+      'housing-type': 'type'
+    },
+    OFFERS: []
   };
 })();

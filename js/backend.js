@@ -47,8 +47,9 @@ window.backend = (function () {
       errorButton.addEventListener('click', function (evt) {
         evt.preventDefault();
         mainBlock.lastChild.remove();
-        window.backend.load(window.map.renderPins, window.backend.onError);
+        window.backend.load(window.backend.onSuccess, window.backend.onError);
+        window.map.renderPins(window.constants.OFFERS);
       });
-    }
+    },
   };
 })();

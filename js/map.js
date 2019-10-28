@@ -1,11 +1,17 @@
 'use strict';
 window.map = (function () {
   var pinsList = window.constants.MAP_BLOCK.querySelector('.map__pins');
+  var initialPinsList = pinsList.cloneNode(true);
   var address = window.constants.AD_FORM.querySelector('#address');
 
   var mapFilters = window.constants.MAP_BLOCK.querySelector('.map__filters');
   var mapPinMain = window.constants.MAP_BLOCK.querySelector('.map__pin--main');
 
+  function onSuccess(data) {
+    window.constants.OFFERS = data;
+    window.map.renderPins(window.constants.OFFERS);
+    mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
+  }
 
   function activateElements(pin) {
     if (window.constants.MAP_BLOCK.classList.contains('map--faded')) {
@@ -13,8 +19,7 @@ window.map = (function () {
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(pin);
-      window.backend.load(window.map.renderPins, window.backend.onError);
-      mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
+      window.backend.load(onSuccess, window.backend.onError);
     }// Иначе форма уже активна
   }
 
@@ -35,6 +40,12 @@ window.map = (function () {
     }
   };
 
+  var housingType = window.constants.MAP_BLOCK.querySelector('#housing-type');
+  housingType.addEventListener('change', function () {
+    var filteredOffersList = window.filter.set(window.constants.OFFERS, housingType);
+    window.map.renderPins(filteredOffersList);
+  });
+
   mapPinMain.addEventListener('keydown', mapPinMainKeydownHandler);
 
   setAddress(mapPinMain, true);
@@ -44,9 +55,12 @@ window.map = (function () {
   return {
     renderPins: function (offersList) {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < offersList.length; i++) {
+      var pinCount = window.constants.PIN_COUNT < offersList.length ? window.constants.PIN_COUNT : offersList.length;
+      for (var i = 0; i < pinCount; i++) {
         fragment.appendChild(window.pin.create(offersList[i]));
       }
+      pinsList.innerHTML = '';
+      pinsList.appendChild(initialPinsList);
       pinsList.appendChild(fragment);
     }
   };
