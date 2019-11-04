@@ -30,7 +30,7 @@ window.map = (function () {
   });
 
   var mapPinMainKeydownHandler = function (evt) {
-    if (evt.keyCode === window.data.ENTER_KEYCODE) {
+    if (evt.keyCode === window.constants.ENTER_KEYCODE) {
       activateElements(mapPinMain);
     }
   };
