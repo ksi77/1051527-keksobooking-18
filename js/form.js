@@ -1,6 +1,6 @@
 'use strict';
 window.form = (function () {
-  var adForm = window.constants.AD_FORM;
+  var adForm = window.data.adForm;
   var inputRoomNumber = adForm.querySelector('#room_number');
   var inputCapacity = adForm.querySelector('#capacity');
 
@@ -80,4 +80,5 @@ window.form = (function () {
       }
     }
   };
+
 })();
