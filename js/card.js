@@ -68,7 +68,7 @@ window.card = (function () {
       // Выведите адрес offer.address в блок .popup__text--address.
       setElement('popup__text--address', 'textContent', 'address', offer.address);
       // Выведите цену offer.price в блок .popup__text--price строкой вида {{offer.price}}₽/ночь. Например, 5200₽/ночь.
-      setElement('popup__text--price', 'textContent', 'price', offer.price + '₽'); // Здесь должен быть span. Почему он пропадает?
+      setElement('popup__text--price', 'textContent', 'price', offer.price + '₽'); // Здесь должен быть span. Почему он пропадает*
       // В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
       setElement('popup__type', 'textContent', 'type', OFFER_TYPE[offer.type]);
       // Выведите количество гостей и комнат offer.rooms и offer.guests в блок .popup__text--capacity
@@ -101,8 +101,13 @@ window.card = (function () {
       // на значения поля author.avatar отрисовываемого объекта.
       newCard.querySelector('.popup__avatar').src = dataCard.author.avatar;
 
+      var onOfferCardEscPress = function (evt) {
+        window.util.isEscEvent(evt, closeOfferCard);
+      };
+
       function closeOfferCard() {
         newCard.remove();
+        document.removeEventListener('keydown', onOfferCardEscPress);
       }
 
       var closeButton = newCard.querySelector('.popup__close');
@@ -111,11 +116,10 @@ window.card = (function () {
         closeOfferCard();
       });
 
-      newCard.addEventListener('keydown', function (evt) {
-        window.util.isEscEvent(evt, closeOfferCard);
-      });
+      document.addEventListener('keydown', onOfferCardEscPress);
 
       return newCard;
     }
   };
+
 })();
