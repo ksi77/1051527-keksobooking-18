@@ -2,7 +2,7 @@
 window.pin = function () {
   return {
     create: function (offer) {
-      var newPin = window.constants.PIN_TEMPLATE.cloneNode(true);
+      var newPin = window.constants.pinTemplate.cloneNode(true);
       var newPinImg = newPin.querySelector('img');
       newPinImg.src = offer.author.avatar;
       newPinImg.alt = offer.author.title;

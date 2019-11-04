@@ -48,8 +48,8 @@ window.backend = (function () {
         evt.preventDefault();
         mainBlock.lastChild.remove();
         window.backend.load(window.backend.onSuccess, window.backend.onError);
-        window.map.renderPins(window.constants.OFFERS);
+        window.map.renderPins(window.data.OFFERS);
       });
-    },
+    }
   };
 })();
