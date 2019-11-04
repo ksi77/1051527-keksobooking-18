@@ -1,25 +1,20 @@
 'use strict';
 window.map = (function () {
-  var pinsList = window.constants.mapBlock.querySelector('.map__pins');
+  var pinsList = window.data.mapBlock.querySelector('.map__pins');
   var initialPinsList = pinsList.cloneNode(true);
-  var address = window.constants.adForm.querySelector('#address');
+  var address = window.data.adForm.querySelector('#address');
 
-  var mapFilters = window.constants.mapBlock.querySelector('.map__filters');
-  var mapPinMain = window.constants.mapBlock.querySelector('.map__pin--main');
-
-  function onSuccess(data) {
-    window.data.offers = data;
-    window.map.renderPins(window.data.offers);
-    mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
-  }
+  var mapFilters = window.data.mapBlock.querySelector('.map__filters');
+  var mapPinMain = window.data.mapBlock.querySelector('.map__pin--main');
 
   function activateElements(pin) {
-    if (window.constants.mapBlock.classList.contains('map--faded')) {
-      window.constants.mapBlock.classList.remove('map--faded');
+    if (window.data.mapBlock.classList.contains('map--faded')) {
+      window.data.mapBlock.classList.remove('map--faded');
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(pin);
-      window.backend.load(onSuccess, window.backend.onError);
+      window.backend.load(window.backend.onSuccess, window.backend.onError);
+      mapPinMain.removeEventListener('keydown', mapPinMainKeydownHandler);
     }// Иначе форма уже активна
   }
 
@@ -35,12 +30,12 @@ window.map = (function () {
   });
 
   var mapPinMainKeydownHandler = function (evt) {
-    if (evt.keyCode === window.constants.ENTER_KEYCODE) {
+    if (evt.keyCode === window.data.ENTER_KEYCODE) {
       activateElements(mapPinMain);
     }
   };
 
-  var housingType = window.constants.mapBlock.querySelector('#housing-type');
+  var housingType = window.data.mapBlock.querySelector('#housing-type');
   housingType.addEventListener('change', function () {
     var filteredOffersList = window.filter.set(window.data.offers, housingType);
     window.map.renderPins(filteredOffersList);
@@ -57,7 +52,7 @@ window.map = (function () {
       var fragment = document.createDocumentFragment();
       var pinCount = window.constants.PIN_COUNT < offersList.length ? window.constants.PIN_COUNT : offersList.length;
       for (var i = 0; i < pinCount; i++) {
-        fragment.appendChild(window.pin.create(offersList[i]));
+        fragment.appendChild(new window.Pin(offersList[i]));
       }
       pinsList.innerHTML = '';
       pinsList.appendChild(initialPinsList);

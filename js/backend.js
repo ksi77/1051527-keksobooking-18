@@ -4,6 +4,8 @@
 // Подключите модуль в index.html и протестируйте решение.
 
 window.backend = (function () {
+  var TIMEOUT = 10000;
+  var SUCCESS_CODE = 200;
   return {
     load: function (onSuccess, onError) {
       var URL = 'https://js.dump.academy/keksobooking/data';
@@ -11,7 +13,7 @@ window.backend = (function () {
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === SUCCESS_CODE) {
           onSuccess(xhr.response);
         } else {
           onError('Статус ответа ' + xhr.status + ' ' + xhr. statusText);
@@ -26,11 +28,17 @@ window.backend = (function () {
         onError('Запрос не успел выполниться');
       });
 
-      xhr.timeout = 10000;
+      xhr.timeout = TIMEOUT;
 
       xhr.open('GET', URL);
       xhr.send();
     },
+
+    onSuccess: function (data) {
+      window.data.offers = data;
+      window.map.renderPins(window.data.offers);
+    },
+
     onError: function (errorMessage) {
       // Если при загрузке данных произошла ошибка запроса, покажите соответствующее
       // сообщение в блоке main,
@@ -48,7 +56,7 @@ window.backend = (function () {
         evt.preventDefault();
         mainBlock.lastChild.remove();
         window.backend.load(window.backend.onSuccess, window.backend.onError);
-        window.map.renderPins(window.data.OFFERS);
+        window.map.renderPins(window.data.offers);
       });
     }
   };
