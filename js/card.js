@@ -13,10 +13,10 @@ window.card = (function () {
   function correctFormOfWord(word, number) {
     var room = ' комнат';
     var guest = ' гостей';
-    if (Number(number) === '1') {
+    if (Number(number) === 1) {
       room = ' комната';
       guest = ' гостя';
-    } else if (Number(number) < '5') {
+    } else if (Number(number) < 5) {
       room = ' комнаты';
     }
     return (word === 'комната') ? room : guest;
@@ -68,7 +68,7 @@ window.card = (function () {
       // Выведите адрес offer.address в блок .popup__text--address.
       setElement('popup__text--address', 'textContent', 'address', offer.address);
       // Выведите цену offer.price в блок .popup__text--price строкой вида {{offer.price}}₽/ночь. Например, 5200₽/ночь.
-      setElement('popup__text--price', 'textContent', 'price', offer.price + '₽'); // Здесь должен быть span. Почему он пропадает*
+      setElement('popup__text--price', 'innerHTML', 'price', offer.price + '₽ <span>/ночь</span>'); // Здесь должен быть span. Почему он пропадает*
       // В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
       setElement('popup__type', 'textContent', 'type', OFFER_TYPE[offer.type]);
       // Выведите количество гостей и комнат offer.rooms и offer.guests в блок .popup__text--capacity
