@@ -37,6 +37,8 @@ window.backend = (function () {
     onSuccess: function (data) {
       window.data.offers = data;
       window.map.renderPins(window.data.offers);
+      var mapFiltersContainer = document.querySelector('.map__filters-container');
+      window.data.mapBlock.insertBefore(window.card.create(data[0]), mapFiltersContainer);
     },
 
     onError: function (errorMessage) {
