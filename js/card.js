@@ -11,13 +11,15 @@ window.card = (function () {
   };
 
   function correctFormOfWord(word, number) {
-    var room = ' комнат';
-    var guest = ' гостей';
-    if (Number(number) === 1) {
-      room = ' комната';
-      guest = ' гостя';
-    } else if (Number(number) < 5) {
-      room = ' комнаты';
+    var room = number + ' комнат';
+    var guest = ' для ' + number + ' гостей';
+    if (Number(number) % 10 === 1) {
+      room = number + ' комната';
+      guest = ' для ' + number + ' гостя';
+    } else if (Number(number) === 0) {
+      guest = ' не для гостей';
+    } else if (Number(number) % 10 < 5) {
+      room = number + ' комнаты';
     }
     return (word === 'комната') ? room : guest;
   }
@@ -68,12 +70,12 @@ window.card = (function () {
       // Выведите адрес offer.address в блок .popup__text--address.
       setElement('popup__text--address', 'textContent', 'address', offer.address);
       // Выведите цену offer.price в блок .popup__text--price строкой вида {{offer.price}}₽/ночь. Например, 5200₽/ночь.
-      setElement('popup__text--price', 'innerHTML', 'price', offer.price + '₽ <span>/ночь</span>'); // Здесь должен быть span. Почему он пропадает*
+      setElement('popup__text--price', 'innerHTML', 'price', offer.price + '₽ <span>/ночь</span>');
       // В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
       setElement('popup__type', 'textContent', 'type', OFFER_TYPE[offer.type]);
       // Выведите количество гостей и комнат offer.rooms и offer.guests в блок .popup__text--capacity
       // строкой вида {{offer.rooms}} комнаты для {{offer.guests}} гостей. Например, 2 комнаты для 3 гостей.
-      setElement('popup__text--capacity', 'textContent', 'rooms', offer.rooms + correctFormOfWord('комната', offer.rooms) + ' для ' + offer.guests + correctFormOfWord('гость', offer.guests));
+      setElement('popup__text--capacity', 'textContent', 'rooms', correctFormOfWord('комната', offer.rooms) + correctFormOfWord('гость', offer.guests));
       // Время заезда и выезда offer.checkin и offer.checkout в блок .popup__text--time строкой вида
       // Заезд после {{offer.checkin}}, выезд до {{offer.checkout}}. Например, заезд после 14:00, выезд до 12:00.
       setElement('popup__text--time', 'textContent', 'checkin', 'Заезд после ' + offer.checkin + ', выезд до ' + offer.checkout);
@@ -102,23 +104,36 @@ window.card = (function () {
       newCard.querySelector('.popup__avatar').src = dataCard.author.avatar;
 
       var onOfferCardEscPress = function (evt) {
-        window.util.isEscEvent(evt, closeOfferCard);
+        window.util.isEscEvent(evt, removeOfferCard);
       };
 
-      function closeOfferCard() {
-        newCard.remove();
+      function removeOfferCard() {
+        window.card.remove();
         document.removeEventListener('keydown', onOfferCardEscPress);
       }
 
       var closeButton = newCard.querySelector('.popup__close');
 
       closeButton.addEventListener('click', function () {
-        closeOfferCard();
+        removeOfferCard();
       });
 
       document.addEventListener('keydown', onOfferCardEscPress);
 
+      window.data.openedCard = newCard;
       return newCard;
+    },
+
+    remove: function () {
+      if (window.data.openedCard) {
+        window.data.openedCard.remove();
+        window.data.openedCard = '';
+      }
+
+      if (window.data.activePin) {
+        window.data.activePin.classList.remove('map__pin--active');
+        window.data.activePin = '';
+      }
     }
   };
 

@@ -9,6 +9,8 @@ window.data = (function () {
     pinTemplate: pinTemplate,
     pinWidth: pinTemplate.clientWidth,
     pinHeight: pinTemplate.clientHeight,
-    adForm: document.querySelector('.ad-form')
+    adForm: document.querySelector('.ad-form'),
+    activePin: '',
+    openedCard: ''
   };
 })();
