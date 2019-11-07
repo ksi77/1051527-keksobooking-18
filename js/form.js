@@ -3,12 +3,15 @@ window.form = (function () {
   var adForm = window.data.adForm;
   var inputRoomNumber = adForm.querySelector('#room_number');
   var inputCapacity = adForm.querySelector('#capacity');
-
+  var inputTimeIn = adForm.querySelector('#timein');
+  var inputTimeOut = adForm.querySelector('#timeout');
   var arrayOfListsElements = [
     adForm.querySelectorAll('input'),
     adForm.querySelectorAll('select'),
     adForm.querySelectorAll('textarea')
   ];
+  var inputPrice = adForm.querySelector('#price');
+  var inputHousingType = adForm.querySelector('#type');
 
   function setValidationCapacity() {
     var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;
@@ -52,17 +55,60 @@ window.form = (function () {
     }
   }
 
+  function setValidationPrice() {
+    var selectedHousingType = inputHousingType.selectedOptions[0].value;
+    switch (selectedHousingType) {
+      case 'bungalo':
+        inputPrice.min = '0';
+        inputPrice.placeholder = '0';
+        break;
+      case 'flat':
+        inputPrice.min = '1000';
+        inputPrice.placeholder = '1000';
+        break;
+      case 'house':
+        inputPrice.min = '5000';
+        inputPrice.placeholder = '5000';
+        break;
+      case 'palace':
+        inputPrice.min = '10000';
+        inputPrice.placeholder = '10000';
+        break;
+      default:
+    }
+  }
+
+  function setValidationTime(timeFieldName) {
+    switch (timeFieldName) {
+      case 'timeIn':
+        inputTimeIn.options[inputTimeOut.options.selectedIndex].selected = true;
+        break;
+      case 'timeOut':
+        inputTimeOut.options[inputTimeIn.options.selectedIndex].selected = true;
+        break;
+    }
+  }
+
   inputCapacity.addEventListener('change', function () {
     if (!inputCapacity.selectedOptions[0].disabled) {
       inputCapacity.setCustomValidity('');
     }
   });
-
   inputRoomNumber.addEventListener('change', function () {
     setValidationCapacity();
   });
+  inputHousingType.addEventListener('change', function () {
+    setValidationPrice();
+  });
+  inputTimeIn.addEventListener('change', function () {
+    setValidationTime('timeOut');
+  });
+  inputTimeOut.addEventListener('change', function () {
+    setValidationTime('timeIn');
+  });
 
   setValidationCapacity();
+  setValidationPrice();
 
   return {
     activate: function (active) {

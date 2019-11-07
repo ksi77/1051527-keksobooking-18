@@ -11,8 +11,17 @@ window.util = (function () {
         action();
       }
     },
-    setup: document.querySelector('.setup'),
-    coatColor: '',
-    eyesColor: ''
+
+    removeCard: function () {
+      if (window.data.openedCard) {
+        window.data.openedCard.remove();
+        window.data.openedCard = '';
+      }
+
+      if (window.data.activePin) {
+        window.data.activePin.classList.remove('map__pin--active');
+        window.data.activePin = '';
+      }
+    },
   };
 })();
