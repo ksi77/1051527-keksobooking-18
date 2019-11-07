@@ -23,8 +23,5 @@ window.util = (function () {
         window.data.activePin = '';
       }
     },
-    setup: document.querySelector('.setup'),
-    coatColor: '',
-    eyesColor: ''
   };
 })();
