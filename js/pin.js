@@ -11,7 +11,7 @@
     newPin.style.top = offer.location.y + 'px';
 
     function setActive() {
-      window.card.remove();
+      window.util.removeCard();
       newPin.classList.add('map__pin--active');
       window.data.activePin = newPin;
       window.data.mapBlock.insertBefore(window.card.create(offer), mapFiltersContainer);

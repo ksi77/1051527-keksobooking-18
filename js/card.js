@@ -11,14 +11,15 @@ window.card = (function () {
   };
 
   function correctFormOfWord(word, number) {
+    var numberNum = Number(number);
     var room = number + ' комнат';
     var guest = ' для ' + number + ' гостей';
-    if (Number(number) % 10 === 1) {
+    if (numberNum % 10 === 1) {
       room = number + ' комната';
       guest = ' для ' + number + ' гостя';
-    } else if (Number(number) === 0) {
+    } else if (numberNum === 0) {
       guest = ' не для гостей';
-    } else if (Number(number) % 10 < 5) {
+    } else if (numberNum % 10 < 5) {
       room = number + ' комнаты';
     }
     return (word === 'комната') ? room : guest;
@@ -108,7 +109,7 @@ window.card = (function () {
       };
 
       function removeOfferCard() {
-        window.card.remove();
+        window.util.removeCard();
         document.removeEventListener('keydown', onOfferCardEscPress);
       }
 
@@ -123,18 +124,6 @@ window.card = (function () {
       window.data.openedCard = newCard;
       return newCard;
     },
-
-    remove: function () {
-      if (window.data.openedCard) {
-        window.data.openedCard.remove();
-        window.data.openedCard = '';
-      }
-
-      if (window.data.activePin) {
-        window.data.activePin.classList.remove('map__pin--active');
-        window.data.activePin = '';
-      }
-    }
   };
 
 })();
