@@ -7,8 +7,8 @@
     var newPinImg = newPin.querySelector('img');
     newPinImg.src = offer.author.avatar;
     newPinImg.alt = offer.author.title;
-    newPin.style.left = offer.location.x + 'px';
-    newPin.style.top = offer.location.y + 'px';
+    newPin.style.left = offer.location.x - window.data.pinWidth / 2 + 'px';
+    newPin.style.top = offer.location.y - window.data.pinHeight + 'px';
 
     function setActive() {
       window.util.removeCard();
