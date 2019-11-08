@@ -18,14 +18,14 @@
     }
 
     var onPinPress = function (evt) {
-      window.util.isEscEvent(evt, setActive());
+      window.util.isEnterEvent(evt, setActive());
     };
 
-    newPin.addEventListener('click', function () { // я хочу эту метод поместить в прототип. Что-то не получается ничего.
+    newPin.addEventListener('click', function () {
       setActive();
     });
 
-    newPin.addEventListener('mousedown', onPinPress);
+    newPin.addEventListener('keydown', onPinPress);
 
     return newPin;
   };
