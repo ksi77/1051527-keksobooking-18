@@ -12,6 +12,7 @@ window.map = (function () {
     this.right = right;
     this.bottom = bottom;
   };
+  var DEFINITION_AREA = new Rect(1, 130, 'window.data.mapBlock.offsetWidth', 630);
 
   var Coordinate = function (x, y, constraints) {
     this.x = x;
@@ -33,7 +34,7 @@ window.map = (function () {
     }
   };
 
-  var mapPinMainSize = new Coordinate(64, 80); // Y - Это из стилевого файла: 65+22-6. Должно быть 81
+  var mapPinMainSize = new Coordinate(66, 80); // Y - Это из стилевого файла: 65+22-6. Должно быть 65 81; 64 - чтобы не париться с округлением при делении
 
   var mapPinMainFirstKeydownHandler = function (evt) {
     if (evt.keyCode === window.constants.ENTER_KEYCODE) {
@@ -61,7 +62,7 @@ window.map = (function () {
   }
 
   var mapPinMainMousdownHandler = function (evt) {
-    var pinMargins = new Rect(1 - mapPinMainSize.x / 2, 130 - mapPinMainSize.y, window.data.mapBlock.offsetWidth - mapPinMainSize.x / 2, 630 - mapPinMainSize.y);
+    var pinMargins = new Rect(DEFINITION_AREA.left - mapPinMainSize.x / 2, DEFINITION_AREA.top - mapPinMainSize.y, window.data.mapBlock.offsetWidth - mapPinMainSize.x / 2, DEFINITION_AREA.bottom - mapPinMainSize.y);
     evt.preventDefault();
 
     var dragged = false;
