@@ -89,20 +89,29 @@ window.form = (function () {
     }
   }
 
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adForm), window.backend.onSaveSuccess, window.backend.onSaveError);
+    evt.preventDefault();
+  });
+
   inputCapacity.addEventListener('change', function () {
     if (!inputCapacity.selectedOptions[0].disabled) {
       inputCapacity.setCustomValidity('');
     }
   });
+
   inputRoomNumber.addEventListener('change', function () {
     setValidationCapacity();
   });
+
   inputHousingType.addEventListener('change', function () {
     setValidationPrice();
   });
+
   inputTimeIn.addEventListener('change', function () {
     setValidationTime('timeOut');
   });
+
   inputTimeOut.addEventListener('change', function () {
     setValidationTime('timeIn');
   });

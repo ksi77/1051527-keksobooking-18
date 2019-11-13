@@ -2,17 +2,24 @@
 window.map = (function () {
   var pinsList = window.data.mapBlock.querySelector('.map__pins');
   var address = window.data.adForm.querySelector('#address');
-  var housingType = window.data.mapBlock.querySelector('#housing-type');
 
   var mapFilters = window.data.mapBlock.querySelector('.map__filters');
   var mapPinMain = window.data.mapBlock.querySelector('.map__pin--main');
-  var Rect = function (left, top, right, bottom) {
-    this.left = left;
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
+
+  var mapPinMainInitialCoordinate = '';
+
+  var DEFINITION_AREA = {
+    left: 1,
+    top: 130,
+    right: 'window.data.mapBlock.offsetWidth',
+    bottom: 630
   };
-  var DEFINITION_AREA = new Rect(1, 130, 'window.data.mapBlock.offsetWidth', 630);
+
+  var MAIN_PIN_SIZE = {
+    width: 66,
+    height: 80,
+    radius: 33
+  };
 
   var Coordinate = function (x, y, constraints) {
     this.x = x;
@@ -34,35 +41,55 @@ window.map = (function () {
     }
   };
 
-  var mapPinMainSize = new Coordinate(66, 80); // Y - Это из стилевого файла: 65+22-6. Должно быть 65 81; 64 - чтобы не париться с округлением при делении
+  function resetMainPin() {
+    mapPinMain.style.left = mapPinMainInitialCoordinate.x;
+    mapPinMain.style.top = mapPinMainInitialCoordinate.y;
+  }
 
-  var mapPinMainFirstKeydownHandler = function (evt) {
-    if (evt.keyCode === window.constants.ENTER_KEYCODE) {
-      activateElements(mapPinMain);
+  function clearPins() {
+    var pinsToRemove = pinsList.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pinsToRemove.length; i++) {
+      pinsToRemove[i].remove();
     }
-  };
+    window.util.removeCard();
+  }
 
-  function activateElements(pin) {
+  function activateElements() {
     if (window.data.mapBlock.classList.contains('map--faded')) {
+      mapPinMainInitialCoordinate = new Coordinate(mapPinMain.style.left, mapPinMain.style.top);
       window.data.mapBlock.classList.remove('map--faded');
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
-      setAddress(pin);
-      window.backend.load(window.backend.onSuccess, window.backend.onError);
+      setAddress(false);
+      window.backend.load(window.backend.onLoadSuccess, window.backend.onLoadError);
       mapPinMain.removeEventListener('mousedown', mapPinMainFirstMousdownHandler);
       mapPinMain.removeEventListener('keydown', mapPinMainFirstKeydownHandler);
       mapPinMain.addEventListener('mousedown', mapPinMainMousdownHandler);
-    }// Иначе форма уже активна, эта проверка, возможно, лишняя
+    }
   }
 
-  function setAddress(pin, toCenter) {
-    var addressX = pin.offsetLeft + mapPinMainSize.x / 2;
-    var addressY = pin.offsetTop + (toCenter ? pin.clientHeight / 2 : mapPinMainSize.y);
+  function setAddress(toCenter) {
+    var addressX = mapPinMain.offsetLeft + (toCenter ? MAIN_PIN_SIZE.radius : MAIN_PIN_SIZE.width / 2);
+    var addressY = mapPinMain.offsetTop + (toCenter ? MAIN_PIN_SIZE.radius : MAIN_PIN_SIZE.height);
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
   }
 
+  var mapPinMainFirstKeydownHandler = function (evt) {
+    window.util.isEnterEvent(evt, activateElements);
+  };
+
+  var mapPinMainFirstMousdownHandler = function () {
+    // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние, удадяеь вызвавшие себя методы, добавляет новый метод на mousedown
+    activateElements();
+  };
+
   var mapPinMainMousdownHandler = function (evt) {
-    var pinMargins = new Rect(DEFINITION_AREA.left - mapPinMainSize.x / 2, DEFINITION_AREA.top - mapPinMainSize.y, window.data.mapBlock.offsetWidth - mapPinMainSize.x / 2, DEFINITION_AREA.bottom - mapPinMainSize.y);
+    var pinMargins = {
+      left: DEFINITION_AREA.left - MAIN_PIN_SIZE.width / 2,
+      top: DEFINITION_AREA.top - MAIN_PIN_SIZE.height,
+      right: window.data.mapBlock.offsetWidth - MAIN_PIN_SIZE.width / 2,
+      bottom: DEFINITION_AREA.bottom - MAIN_PIN_SIZE.height
+    };
     evt.preventDefault();
 
     var dragged = false;
@@ -82,7 +109,7 @@ window.map = (function () {
 
       mapPinMain.style.left = pinCoords.x + 'px';
       mapPinMain.style.top = pinCoords.y + 'px';
-      setAddress(mapPinMain, false);
+      setAddress(false);
 
     };
 
@@ -105,38 +132,36 @@ window.map = (function () {
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  var mapPinMainFirstMousdownHandler = function () {
-    // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние, удадяеь вызвавшие себя методы, добавляет новый метод на mousedown
-    activateElements(mapPinMain);
-  };
-
   mapPinMain.addEventListener('mousedown', mapPinMainFirstMousdownHandler);
-
-  housingType.addEventListener('change', function () {
-    var filteredOffersList = window.filter.set(window.data.offers, housingType);
-    window.map.renderPins(filteredOffersList);
-  });
 
   mapPinMain.addEventListener('keydown', mapPinMainFirstKeydownHandler);
 
-  setAddress(mapPinMain, true);
+  setAddress(true);
   window.form.activate(false);
 
 
   return {
     renderPins: function (offersList) {
-      var pinsToRemove = pinsList.querySelectorAll('.map__pin:not(.map__pin--main)');
-      for (var i = 0; i < pinsToRemove.length; i++) {
-        pinsToRemove[i].remove();
-      }
-
+      clearPins();
       var fragment = document.createDocumentFragment();
       var pinCount = window.constants.PIN_COUNT < offersList.length ? window.constants.PIN_COUNT : offersList.length;
-      for (i = 0; i < pinCount; i++) {
+      for (var i = 0; i < pinCount; i++) {
         fragment.appendChild(new window.Pin(offersList[i]));
       }
 
       pinsList.appendChild(fragment);
+    },
+
+    totalReset: function () {
+      window.data.mapBlock.classList.add('map--faded');
+      mapFilters.classList.add('map-filters--disabled');
+      window.form.activate(false);
+      clearPins();
+      resetMainPin();
+      window.data.adForm.reset();
+      setAddress(mapPinMain);
+      mapPinMain.addEventListener('mousedown', mapPinMainFirstMousdownHandler);
+      mapPinMain.addEventListener('keydown', mapPinMainFirstKeydownHandler);
     }
   };
 })();
