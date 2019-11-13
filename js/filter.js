@@ -16,7 +16,7 @@ window.filter = (function () {
     'filter-conditioner': 'conditioner'
   };
 
-  window.filters = [];
+  var filters = [];
   var setFilter = window.debounce(function () {
     var array = window.data.offers;
     var dataFilterName = '';
@@ -58,7 +58,7 @@ window.filter = (function () {
       }
     }
 
-    window.filters.forEach(function (item) {
+    filters.forEach(function (item) {
       setFilterValue(item);
       array = (filterValue === 'any') ? array : array.filter(isFilterTrue);
     });
@@ -68,7 +68,7 @@ window.filter = (function () {
   Object.keys(mapFilters).forEach(function (key) {
     var filterElement = window.data.mapBlock.querySelector('#' + key);
     filterElement.addEventListener('change', setFilter);
-    window.filters.push(filterElement);
+    filters.push(filterElement);
   });
 
 
