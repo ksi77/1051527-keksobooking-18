@@ -1,9 +1,9 @@
 'use strict';
 window.card = (function () {
-  var CARD_TEMPLATE = document.querySelector('#card')
+  var cardTemplate = document.querySelector('#card')
                     .content
                     .querySelector('.map__card');
-  var OFFER_TYPE = {
+  var offerType = {
     flat: 'Квартира',
     bungalo: 'Бунгало',
     house: 'Дом',
@@ -50,7 +50,7 @@ window.card = (function () {
   // и шаблона #card создайте DOM-элемент объявления, заполните его данными из объекта:
   return {
     create: function (dataCard) {
-      var newCard = CARD_TEMPLATE.cloneNode(true);
+      var newCard = cardTemplate.cloneNode(true);
       // Выведите заголовок объявления offer.title в заголовок .popup__title.
       if (!dataCard.hasOwnProperty('offer')) {
         return '';
@@ -73,7 +73,7 @@ window.card = (function () {
       // Выведите цену offer.price в блок .popup__text--price строкой вида {{offer.price}}₽/ночь. Например, 5200₽/ночь.
       setElement('popup__text--price', 'innerHTML', 'price', offer.price + '₽ <span>/ночь</span>');
       // В блок .popup__type выведите тип жилья offer.type: Квартира для flat, Бунгало для bungalo, Дом для house, Дворец для palace.
-      setElement('popup__type', 'textContent', 'type', OFFER_TYPE[offer.type]);
+      setElement('popup__type', 'textContent', 'type', offerType[offer.type]);
       // Выведите количество гостей и комнат offer.rooms и offer.guests в блок .popup__text--capacity
       // строкой вида {{offer.rooms}} комнаты для {{offer.guests}} гостей. Например, 2 комнаты для 3 гостей.
       setElement('popup__text--capacity', 'textContent', 'rooms', correctFormOfWord('комната', offer.rooms) + correctFormOfWord('гость', offer.guests));

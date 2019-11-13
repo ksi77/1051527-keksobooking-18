@@ -90,7 +90,7 @@ window.form = (function () {
   }
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), window.backend.onSaveSuccess, window.backend.onSaveError);
+    window.backend.save(new FormData(adForm), window.messenger.onSaveSuccess, window.messenger.onSaveError);
     evt.preventDefault();
   });
 

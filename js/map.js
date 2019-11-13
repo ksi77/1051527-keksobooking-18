@@ -8,17 +8,17 @@ window.map = (function () {
 
   var mapPinMainInitialCoordinate = '';
 
-  var DEFINITION_AREA = {
-    left: 1,
-    top: 130,
-    right: 'window.data.mapBlock.offsetWidth',
-    bottom: 630
+  var DefinitionArea = {
+    LEFT: 1,
+    TOP: 130,
+    RIGHT: window.data.mapBlock.offsetWidth,
+    BOTTOM: 630
   };
 
-  var MAIN_PIN_SIZE = {
-    width: 66,
-    height: 80,
-    radius: 33
+  var MapPinSize = {
+    WIDTH: 66,
+    HEIGHT: 80,
+    RADIUS: 33
   };
 
   var Coordinate = function (x, y, constraints) {
@@ -54,6 +54,11 @@ window.map = (function () {
     window.util.removeCard();
   }
 
+  function onLoadSuccess(data) {
+    window.data.offers = data;
+    window.map.renderPins(window.data.offers);
+  }
+
   function activateElements() {
     if (window.data.mapBlock.classList.contains('map--faded')) {
       mapPinMainInitialCoordinate = new Coordinate(mapPinMain.style.left, mapPinMain.style.top);
@@ -61,16 +66,17 @@ window.map = (function () {
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
       setAddress(false);
-      window.backend.load(window.backend.onLoadSuccess, window.backend.onLoadError);
+      window.backend.load(onLoadSuccess, window.messenger.onLoadError);
       mapPinMain.removeEventListener('mousedown', mapPinMainFirstMousdownHandler);
       mapPinMain.removeEventListener('keydown', mapPinMainFirstKeydownHandler);
       mapPinMain.addEventListener('mousedown', mapPinMainMousdownHandler);
     }
   }
 
+
   function setAddress(toCenter) {
-    var addressX = mapPinMain.offsetLeft + (toCenter ? MAIN_PIN_SIZE.radius : MAIN_PIN_SIZE.width / 2);
-    var addressY = mapPinMain.offsetTop + (toCenter ? MAIN_PIN_SIZE.radius : MAIN_PIN_SIZE.height);
+    var addressX = mapPinMain.offsetLeft + (toCenter ? MapPinSize.RADIUS : MapPinSize.WIDTH / 2);
+    var addressY = mapPinMain.offsetTop + (toCenter ? MapPinSize.RADIUS : MapPinSize.HEIGHT);
     address.value = Math.round(addressX) + ', ' + Math.round(addressY);
   }
 
@@ -85,10 +91,10 @@ window.map = (function () {
 
   var mapPinMainMousdownHandler = function (evt) {
     var pinMargins = {
-      left: DEFINITION_AREA.left - MAIN_PIN_SIZE.width / 2,
-      top: DEFINITION_AREA.top - MAIN_PIN_SIZE.height,
-      right: window.data.mapBlock.offsetWidth - MAIN_PIN_SIZE.width / 2,
-      bottom: DEFINITION_AREA.bottom - MAIN_PIN_SIZE.height
+      left: DefinitionArea.LEFT - MapPinSize.WIDTH / 2,
+      top: DefinitionArea.TOP - MapPinSize.HEIGHT,
+      right: DefinitionArea.RIGHT - MapPinSize.WIDTH / 2,
+      bottom: DefinitionArea.BOTTOM - MapPinSize.HEIGHT
     };
     evt.preventDefault();
 

@@ -3,7 +3,7 @@
 
 'use strict';
 window.filter = (function () {
-  var MAP_FILTERS = {
+  var mapFilters = {
     'housing-type': 'type',
     'housing-rooms': 'rooms',
     'housing-guests': 'guests',
@@ -51,7 +51,7 @@ window.filter = (function () {
     function setFilterValue(item) {
       if (item.type === 'select-one') {
         filterValue = item.selectedOptions[0].value.toString();
-        dataFilterName = MAP_FILTERS[item.id];
+        dataFilterName = mapFilters[item.id];
       } else if (item.type === 'checkbox') {
         filterValue = item.checked === true ? item.value : 'any';
         dataFilterName = 'features';
@@ -65,7 +65,7 @@ window.filter = (function () {
     window.map.renderPins(array);
   });
 
-  Object.keys(MAP_FILTERS).forEach(function (key) {
+  Object.keys(mapFilters).forEach(function (key) {
     var filterElement = window.data.mapBlock.querySelector('#' + key);
     filterElement.addEventListener('change', setFilter);
     window.filters.push(filterElement);

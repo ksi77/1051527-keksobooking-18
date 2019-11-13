@@ -1,8 +1,8 @@
 'use strict';
 (function () {
-  var PIN_SIZE = {
-    x: 50,
-    y: 70
+  var PinSize = {
+    X: 50,
+    Y: 70
   };
 
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -13,8 +13,8 @@
     var newPinImg = newPin.querySelector('img');
     newPinImg.src = offer.author.avatar;
     newPinImg.alt = offer.author.title;
-    newPin.style.left = offer.location.x - PIN_SIZE.x / 2 + 'px';
-    newPin.style.top = offer.location.y - PIN_SIZE.y + 'px';
+    newPin.style.left = offer.location.x - PinSize.X / 2 + 'px';
+    newPin.style.top = offer.location.y - PinSize.Y + 'px';
 
     function setActive() {
       window.util.removeCard();
