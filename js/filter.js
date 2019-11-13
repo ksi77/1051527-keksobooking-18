@@ -1,37 +1,75 @@
+// Воспользуйтесь приёмом «устранение дребезга» для того, чтобы сделать так, чтобы при переключении
+// фильтра обновление списка элементов, подходящих под фильтры, происходило не чаще, чем один раз в полсекунды.
+
 'use strict';
 window.filter = (function () {
-  var MAP_FILTERS = {
-    'housing-type': 'type'
+  var mapFilters = {
+    'housing-type': 'type',
+    'housing-rooms': 'rooms',
+    'housing-guests': 'guests',
+    'housing-price': 'price',
+    'filter-wifi': 'wifi',
+    'filter-dishwasher': 'dishwasher',
+    'filter-parking': 'parking',
+    'filter-washer': 'washer',
+    'filter-elevator': 'elevator',
+    'filter-conditioner': 'conditioner'
   };
 
-  return {
-    // Функция выборки из массива, параметры: массив и поле-селект, по значению которого происходит выборка.
-    set: function (array, filterField) {
-      // Значение - это первый (и единственный? там же не мультиселект?) элемент списка выбранных элементов
-      var filterValue = filterField.selectedOptions[0].value;
-      // функция, которая возвращает true, если элемент удовлетворяет условиям выборки, имеет 1-2-3 параметра.
-      // (как использовать 2(индекс) и 3(массив) я не поняла)
-      function isFilterTrue(element) {
-        // поскольку имя поля-селект не соответствует имени свойства объекта предложений в массиве, который вернул сервер,
-        // я сделала глобальное перечисление, в котором эти имена поставлены в соответствие
-        var dataFilterName = MAP_FILTERS[filterField.name];
-        // и теперь по полученному имени достаю значение и проверяю, равно ли оно значению выбранного поля
-        if (element.offer[dataFilterName] === filterValue) {
-          return true;
-        } else {
-          return false;
-        }
+  window.filters = [];
+  var setFilter = window.debounce(function () {
+    var array = window.data.offers;
+    var dataFilterName = '';
+    var filterValue = '';
+
+    function isPriceInRange(price, range) {
+      price = Number(price);
+      switch (range) {
+        case 'high':
+          if (price >= 50000) {
+            return true;
+          }
+          break;
+        case 'low':
+          if (price < 10000) {
+            return true;
+          }
+          break;
+        case 'middle':
+          if (price >= 10000 & price < 50000) {
+            return true;
+          }
+          break;
       }
-      window.card.remove();
-      // Если выбранное поле имеет значение "любой", значит массив можно не обрабатывать
-      // Это работает пока, потому что передается всегда исходный массив, полученный с сервера.
-      // Потом, наверное, перенесу сравнение на 'any' внутрь isFilterTrue (когда будет множественный фильтр)
-      // Не думала еще про это.
-      if (filterValue === 'any') {
-        return array;
-      } else {
-        return array.filter(isFilterTrue);
+      return false;
+    }
+
+    function isFilterTrue(element) {
+      return (dataFilterName === 'price') ? isPriceInRange(element.offer[dataFilterName], filterValue) : element.offer[dataFilterName].toString().indexOf(filterValue) + 1;
+    }
+
+    function setFilterValue(item) {
+      if (item.type === 'select-one') {
+        filterValue = item.selectedOptions[0].value.toString();
+        dataFilterName = mapFilters[item.id];
+      } else if (item.type === 'checkbox') {
+        filterValue = item.checked === true ? item.value : 'any';
+        dataFilterName = 'features';
       }
     }
-  };
+
+    window.filters.forEach(function (item) {
+      setFilterValue(item);
+      array = (filterValue === 'any') ? array : array.filter(isFilterTrue);
+    });
+    window.map.renderPins(array);
+  });
+
+  Object.keys(mapFilters).forEach(function (key) {
+    var filterElement = window.data.mapBlock.querySelector('#' + key);
+    filterElement.addEventListener('change', setFilter);
+    window.filters.push(filterElement);
+  });
+
+
 })();

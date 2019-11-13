@@ -22,6 +22,6 @@ window.util = (function () {
         window.data.activePin.classList.remove('map__pin--active');
         window.data.activePin = '';
       }
-    },
+    }
   };
 })();

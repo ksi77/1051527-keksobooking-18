@@ -1,14 +1,20 @@
 'use strict';
 (function () {
+  var PinSize = {
+    X: 50,
+    Y: 70
+  };
+
   var mapFiltersContainer = document.querySelector('.map__filters-container');
+  var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   window.Pin = function (offer) {
-    var newPin = window.data.pinTemplate.cloneNode(true);
+    var newPin = pinTemplate.cloneNode(true);
     var newPinImg = newPin.querySelector('img');
     newPinImg.src = offer.author.avatar;
     newPinImg.alt = offer.author.title;
-    newPin.style.left = offer.location.x + 'px';
-    newPin.style.top = offer.location.y + 'px';
+    newPin.style.left = offer.location.x - PinSize.X / 2 + 'px';
+    newPin.style.top = offer.location.y - PinSize.Y + 'px';
 
     function setActive() {
       window.util.removeCard();
@@ -18,14 +24,14 @@
     }
 
     var onPinPress = function (evt) {
-      window.util.isEscEvent(evt, setActive());
+      window.util.isEnterEvent(evt, setActive());
     };
 
-    newPin.addEventListener('click', function () { // я хочу эту метод поместить в прототип. Что-то не получается ничего.
+    newPin.addEventListener('click', function () {
       setActive();
     });
 
-    newPin.addEventListener('mousedown', onPinPress);
+    newPin.addEventListener('keydown', onPinPress);
 
     return newPin;
   };
