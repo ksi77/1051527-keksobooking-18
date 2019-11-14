@@ -45,12 +45,21 @@ window.filter = (function () {
     }
 
     function isFilterTrue(element) {
-      return (dataFilterName === 'price') ? isPriceInRange(element.offer[dataFilterName], filterValue) : element.offer[dataFilterName].toString().indexOf(filterValue) + 1;
+      switch (dataFilterName) {
+        case 'price':
+          return isPriceInRange(element.offer[dataFilterName], filterValue);
+        case 'guests':
+          return Number(filterValue) === Number(element.offer[dataFilterName]);
+        case 'rooms':
+          return Number(filterValue) === Number(element.offer[dataFilterName]);
+        default:
+          return element.offer[dataFilterName].toString().indexOf(filterValue) + 1;
+      }
     }
 
     function setFilterValue(item) {
       if (item.type === 'select-one') {
-        filterValue = item.selectedOptions[0].value.toString();
+        filterValue = item.selectedOptions[0].value;
         dataFilterName = mapFilters[item.id];
       } else if (item.type === 'checkbox') {
         filterValue = item.checked === true ? item.value : 'any';
