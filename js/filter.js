@@ -16,7 +16,7 @@ window.filter = (function () {
     'filter-conditioner': 'conditioner'
   };
 
-  window.filters = [];
+  var filters = [];
   var setFilter = window.debounce(function () {
     var array = window.data.offers;
     var dataFilterName = '';
@@ -45,12 +45,21 @@ window.filter = (function () {
     }
 
     function isFilterTrue(element) {
-      return (dataFilterName === 'price') ? isPriceInRange(element.offer[dataFilterName], filterValue) : element.offer[dataFilterName].toString().indexOf(filterValue) + 1;
+      switch (dataFilterName) {
+        case 'price':
+          return isPriceInRange(element.offer[dataFilterName], filterValue);
+        case 'guests':
+          return Number(filterValue) === Number(element.offer[dataFilterName]);
+        case 'rooms':
+          return Number(filterValue) === Number(element.offer[dataFilterName]);
+        default:
+          return element.offer[dataFilterName].toString().indexOf(filterValue) + 1;
+      }
     }
 
     function setFilterValue(item) {
       if (item.type === 'select-one') {
-        filterValue = item.selectedOptions[0].value.toString();
+        filterValue = item.selectedOptions[0].value;
         dataFilterName = mapFilters[item.id];
       } else if (item.type === 'checkbox') {
         filterValue = item.checked === true ? item.value : 'any';
@@ -58,7 +67,7 @@ window.filter = (function () {
       }
     }
 
-    window.filters.forEach(function (item) {
+    filters.forEach(function (item) {
       setFilterValue(item);
       array = (filterValue === 'any') ? array : array.filter(isFilterTrue);
     });
@@ -68,7 +77,7 @@ window.filter = (function () {
   Object.keys(mapFilters).forEach(function (key) {
     var filterElement = window.data.mapBlock.querySelector('#' + key);
     filterElement.addEventListener('change', setFilter);
-    window.filters.push(filterElement);
+    filters.push(filterElement);
   });
 
 
