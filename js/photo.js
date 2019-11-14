@@ -22,7 +22,7 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        avatarPreview.src = 'url(' + reader.result + ')';
+        avatarPreview.src = reader.result;
       });
 
       reader.readAsDataURL(file);
