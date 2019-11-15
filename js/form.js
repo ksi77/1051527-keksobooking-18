@@ -1,10 +1,13 @@
 'use strict';
 window.form = (function () {
   var adForm = window.data.adForm;
+  var resetButton = adForm.querySelector('.ad-form__reset');
   var inputRoomNumber = adForm.querySelector('#room_number');
   var inputCapacity = adForm.querySelector('#capacity');
   var inputTimeIn = adForm.querySelector('#timein');
   var inputTimeOut = adForm.querySelector('#timeout');
+  var inputAddress = adForm.querySelector('#address');
+
   var arrayOfListsElements = [
     adForm.querySelectorAll('input'),
     adForm.querySelectorAll('select'),
@@ -13,41 +16,43 @@ window.form = (function () {
   var inputPrice = adForm.querySelector('#price');
   var inputHousingType = adForm.querySelector('#type');
 
+  function setAddress(toCenter) {
+    var addressX = window.data.mapPinMain.offsetLeft + (toCenter ? window.data.MapPinSize.RADIUS : window.data.MapPinSize.WIDTH / 2);
+    var addressY = window.data.mapPinMain.offsetTop + (toCenter ? window.data.MapPinSize.RADIUS : window.data.MapPinSize.HEIGHT);
+    inputAddress.value = Math.round(addressX) + ', ' + Math.round(addressY);
+  }
+
   function setValidationCapacity() {
     var selectedRoomNumber = inputRoomNumber.selectedOptions[0].value;
-    var capacity1 = inputCapacity.querySelector('[value="1"]');
-    var capacity2 = inputCapacity.querySelector('[value="2"]');
-    var capacity3 = inputCapacity.querySelector('[value="3"]');
-    var capacity0 = inputCapacity.querySelector('[value="0"]');
+    var capacities = [
+      inputCapacity.querySelector('[value="0"]'),
+      inputCapacity.querySelector('[value="1"]'),
+      inputCapacity.querySelector('[value="2"]'),
+      inputCapacity.querySelector('[value="3"]')
+    ];
+
+    function setDisabled(arrayOfValues) {
+      capacities.forEach(function (item, index) {
+        item.disabled = arrayOfValues[index];
+      });
+    }
 
     switch (selectedRoomNumber) {
       // 1 комната — «для 1 гостя»;
       case '1': // 1 комната
-        capacity1.disabled = false;
-        capacity2.disabled = true;
-        capacity3.disabled = true;
-        capacity0.disabled = true;
+        setDisabled([true, false, true, true]);
         break;
       // 2 комнаты — «для 2 гостей» или «для 1 гостя»;
-      case '2': // 2 комнаты fftt
-        capacity1.disabled = false;
-        capacity2.disabled = false;
-        capacity3.disabled = true;
-        capacity0.disabled = true;
+      case '2': // 2 комнаты
+        setDisabled([true, false, false, true]);
         break;
       // 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
-      case '3': // 3 комнаты ffft
-        capacity1.disabled = false;
-        capacity2.disabled = false;
-        capacity3.disabled = false;
-        capacity0.disabled = true;
+      case '3': // 3 комнаты
+        setDisabled([true, false, false, false]);
         break;
       // 100 комнат — «не для гостей».
-      case '100': // 100 комнат tttf
-        capacity1.disabled = true;
-        capacity2.disabled = true;
-        capacity3.disabled = true;
-        capacity0.disabled = false;
+      case '100': // 100 комнат
+        setDisabled([false, true, true, true]);
         break;
     }
     if (inputCapacity.selectedOptions[0].disabled) {
@@ -57,22 +62,22 @@ window.form = (function () {
 
   function setValidationPrice() {
     var selectedHousingType = inputHousingType.selectedOptions[0].value;
+    function setPrice(min) {
+      inputPrice.min = min;
+      inputPrice.placeholder = min;
+    }
     switch (selectedHousingType) {
       case 'bungalo':
-        inputPrice.min = '0';
-        inputPrice.placeholder = '0';
+        setPrice('0');
         break;
       case 'flat':
-        inputPrice.min = '1000';
-        inputPrice.placeholder = '1000';
+        setPrice('1000');
         break;
       case 'house':
-        inputPrice.min = '5000';
-        inputPrice.placeholder = '5000';
+        setPrice('5000');
         break;
       case 'palace':
-        inputPrice.min = '10000';
-        inputPrice.placeholder = '10000';
+        setPrice('10000');
         break;
       default:
     }
@@ -89,14 +94,19 @@ window.form = (function () {
     }
   }
 
+  function adFormReset() {
+    adForm.reset();
+    window.photo.reset();
+    setAddress(false);
+  }
+
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), window.messenger.onSaveSuccess, window.messenger.onSaveError);
   });
 
-  adForm.addEventListener('reset', function (evt) {
-    evt.preventDefault();
-    window.form.reset();
+  resetButton.addEventListener('click', function () {
+    adFormReset();
   });
 
   inputCapacity.addEventListener('change', function () {
@@ -123,6 +133,7 @@ window.form = (function () {
 
   setValidationCapacity();
   setValidationPrice();
+  setAddress();
 
   return {
     activate: function (active) {
@@ -139,10 +150,10 @@ window.form = (function () {
         }
       }
     },
-    reset: function () {
-      adForm.reset();
-      window.photo.reset();
-    }
+
+    reset: adFormReset,
+
+    setAddress: setAddress
   };
 
 })();

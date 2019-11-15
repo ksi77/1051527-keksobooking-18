@@ -1,24 +1,18 @@
 'use strict';
 window.map = (function () {
   var pinsList = window.data.mapBlock.querySelector('.map__pins');
-  var address = window.data.adForm.querySelector('#address');
-
   var mapFilters = window.data.mapBlock.querySelector('.map__filters');
-  var mapPinMain = window.data.mapBlock.querySelector('.map__pin--main');
 
+  var mapPinMain = window.data.mapPinMain;
+  var mapPinSize = window.data.MapPinSize;
   var mapPinMainInitialCoordinate = '';
+
 
   var DefinitionArea = {
     LEFT: 1,
     TOP: 130,
-    RIGHT: window.data.mapBlock.offsetWidth,
+    RIGHT: 'window.data.mapBlock.offsetWidth',
     BOTTOM: 630
-  };
-
-  var MapPinSize = {
-    WIDTH: 66,
-    HEIGHT: 80,
-    RADIUS: 33
   };
 
   var Coordinate = function (x, y, constraints) {
@@ -48,9 +42,9 @@ window.map = (function () {
 
   function clearPins() {
     var pinsToRemove = pinsList.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pinsToRemove.length; i++) {
-      pinsToRemove[i].remove();
-    }
+    pinsToRemove.forEach(function (item) {
+      item.remove();
+    });
     window.util.removeCard();
   }
 
@@ -65,37 +59,31 @@ window.map = (function () {
       window.data.mapBlock.classList.remove('map--faded');
       mapFilters.classList.remove('map-filters--disabled');
       window.form.activate(true);
-      setAddress(false);
+      window.form.setAddress(false);
       window.backend.load(onLoadSuccess, window.messenger.onLoadError);
-      mapPinMain.removeEventListener('mousedown', mapPinMainFirstMousdownHandler);
-      mapPinMain.removeEventListener('keydown', mapPinMainFirstKeydownHandler);
-      mapPinMain.addEventListener('mousedown', mapPinMainMousdownHandler);
+      mapPinMain.removeEventListener('mousedown', onMapPinMainFirstMousdown);
+      mapPinMain.removeEventListener('keydown', onMapPinMainFirstKeydown);
+      mapPinMain.addEventListener('mousedown', onMapPinMainMousdown);
     }
   }
 
-
-  function setAddress(toCenter) {
-    var addressX = mapPinMain.offsetLeft + (toCenter ? MapPinSize.RADIUS : MapPinSize.WIDTH / 2);
-    var addressY = mapPinMain.offsetTop + (toCenter ? MapPinSize.RADIUS : MapPinSize.HEIGHT);
-    address.value = Math.round(addressX) + ', ' + Math.round(addressY);
-  }
-
-  var mapPinMainFirstKeydownHandler = function (evt) {
+  var onMapPinMainFirstKeydown = function (evt) {
     window.util.isEnterEvent(evt, activateElements);
   };
 
-  var mapPinMainFirstMousdownHandler = function () {
+  var onMapPinMainFirstMousdown = function () {
     // Первое взаимодействие с меткой (mousedown) переводит страницу в активное состояние, удадяеь вызвавшие себя методы, добавляет новый метод на mousedown
     activateElements();
   };
 
-  var mapPinMainMousdownHandler = function (evt) {
+  var onMapPinMainMousdown = function (evt) {
     var pinMargins = {
-      left: DefinitionArea.LEFT - MapPinSize.WIDTH / 2,
-      top: DefinitionArea.TOP - MapPinSize.HEIGHT,
-      right: DefinitionArea.RIGHT - MapPinSize.WIDTH / 2,
-      bottom: DefinitionArea.BOTTOM - MapPinSize.HEIGHT
+      left: DefinitionArea.LEFT - mapPinSize.WIDTH / 2,
+      top: DefinitionArea.TOP - mapPinSize.HEIGHT,
+      right: window.data.mapBlock.offsetWidth - mapPinSize.WIDTH / 2,
+      bottom: DefinitionArea.BOTTOM - mapPinSize.HEIGHT
     };
+
     evt.preventDefault();
 
     var dragged = false;
@@ -115,7 +103,7 @@ window.map = (function () {
 
       mapPinMain.style.left = pinCoords.x + 'px';
       mapPinMain.style.top = pinCoords.y + 'px';
-      setAddress(false);
+      window.form.setAddress(false);
 
     };
 
@@ -138,11 +126,10 @@ window.map = (function () {
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  mapPinMain.addEventListener('mousedown', mapPinMainFirstMousdownHandler);
+  mapPinMain.addEventListener('mousedown', onMapPinMainFirstMousdown);
 
-  mapPinMain.addEventListener('keydown', mapPinMainFirstKeydownHandler);
+  mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
 
-  setAddress(true);
   window.form.activate(false);
 
 
@@ -164,10 +151,10 @@ window.map = (function () {
       window.form.activate(false);
       clearPins();
       resetMainPin();
-      window.data.adForm.reset();
-      setAddress(mapPinMain);
-      mapPinMain.addEventListener('mousedown', mapPinMainFirstMousdownHandler);
-      mapPinMain.addEventListener('keydown', mapPinMainFirstKeydownHandler);
-    }
+      window.form.reset();
+      window.form.setAddress(true);
+      mapPinMain.addEventListener('mousedown', onMapPinMainFirstMousdown);
+      mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
+    },
   };
 })();

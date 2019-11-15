@@ -17,29 +17,20 @@ window.filter = (function () {
   };
 
   var filters = [];
-  var setFilter = window.debounce(function () {
+
+  function setFilter() {
     var array = window.data.offers;
     var dataFilterName = '';
     var filterValue = '';
-
     function isPriceInRange(price, range) {
       price = Number(price);
       switch (range) {
         case 'high':
-          if (price >= 50000) {
-            return true;
-          }
-          break;
+          return (price >= 50000);
         case 'low':
-          if (price < 10000) {
-            return true;
-          }
-          break;
+          return price < 10000;
         case 'middle':
-          if (price >= 10000 & price < 50000) {
-            return true;
-          }
-          break;
+          return (price >= 10000 & price < 50000);
       }
       return false;
     }
@@ -71,13 +62,13 @@ window.filter = (function () {
       array = (filterValue === 'any') ? array : array.filter(isFilterTrue);
     });
     window.map.renderPins(array);
-  });
+  }
+
+  var onFilterFieldChange = window.debounce(setFilter);
 
   Object.keys(mapFilters).forEach(function (key) {
     var filterElement = window.data.mapBlock.querySelector('#' + key);
-    filterElement.addEventListener('change', setFilter);
+    filterElement.addEventListener('change', onFilterFieldChange);
     filters.push(filterElement);
   });
-
-
 })();
