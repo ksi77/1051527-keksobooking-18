@@ -49,7 +49,6 @@ window.filter = (function () {
         case 'price':
           return isPriceInRange(element.offer[dataFilterName], filterValue);
         case 'guests':
-          return Number(filterValue) === Number(element.offer[dataFilterName]);
         case 'rooms':
           return Number(filterValue) === Number(element.offer[dataFilterName]);
         default:

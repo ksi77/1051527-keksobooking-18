@@ -90,8 +90,13 @@ window.form = (function () {
   }
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), window.messenger.onSaveSuccess, window.messenger.onSaveError);
     evt.preventDefault();
+    window.backend.save(new FormData(adForm), window.messenger.onSaveSuccess, window.messenger.onSaveError);
+  });
+
+  adForm.addEventListener('reset', function (evt) {
+    evt.preventDefault();
+    window.form.reset();
   });
 
   inputCapacity.addEventListener('change', function () {
@@ -133,6 +138,10 @@ window.form = (function () {
           currentList[j].disabled = !active;
         }
       }
+    },
+    reset: function () {
+      adForm.reset();
+      window.photo.reset();
     }
   };
 

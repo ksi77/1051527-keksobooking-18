@@ -1,18 +1,23 @@
-// Файл avatar.js
-// Доработайте форму подачи объявления так, чтобы в неё можно было загружать аватарку и фотографию жилья.
-
 'use strict';
 
-(function () {
+window.photo = (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var DEFAULT_AVATAR_IMG = 'img/muffin-grey.svg';
+  var fileChoosers = {
+    avatar: {
+      chooser: document.querySelector('.ad-form__field input[type=file]'),
+      preview: document.querySelector('.ad-form-header__preview img')
+    },
+    images: {
+      chooser: document.querySelector('.ad-form__upload input[type=file]'),
+      preview: document.querySelector('.ad-form__photo')
+    }
+  };
 
-  var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
-  // и показываться в блоке .ad-form-header__preview.
-  var avatarPreview = document.querySelector('.ad-form-header__preview img');
-
-  avatarChooser.addEventListener('change', function (evt) {
+  function onFileChooserChange(evt) {
     var file = evt.target.files[0];
     var fileName = file.name.toLowerCase();
+    var preview = fileChoosers[evt.target.id].preview;
 
     var matches = FILE_TYPES.some(function (it) {
       return fileName.endsWith(it);
@@ -22,35 +27,31 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        avatarPreview.src = reader.result;
+        if (preview.tagName === 'IMG') {
+          preview.src = reader.result;
+        } else {
+          preview.style.backgroundImage = 'url(' + reader.result + ')';
+        }
       });
 
       reader.readAsDataURL(file);
     }
+  }
+
+  Object.keys(fileChoosers).forEach(function (key) {
+    fileChoosers[key].chooser.addEventListener('change', onFileChooserChange);
   });
-  // Фотография жилья должна загружаться через поле загрузки файлов
-  // в блоке .ad-form__upload
-  var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
-  // и показываться в блоке .ad-form__photo.
-  var photoPreview = document.querySelector('.ad-form__photo');
 
-  photoChooser.addEventListener('change', function (evt) {
-    var file = evt.target.files[0];
-    var fileName = file.name.toLowerCase();
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        photoPreview.style.backgroundImage = 'url(' + reader.result + ')';
+  return {
+    reset: function () {
+      Object.keys(fileChoosers).forEach(function (key) {
+        var preview = fileChoosers[key].preview;
+        if (preview.tagName === 'IMG') {
+          preview.src = DEFAULT_AVATAR_IMG;
+        } else {
+          preview.style.backgroundImage = '';
+        }
       });
-
-      reader.readAsDataURL(file);
     }
-  });
-
+  };
 })();
