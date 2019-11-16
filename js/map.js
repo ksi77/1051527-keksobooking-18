@@ -130,8 +130,6 @@ window.map = (function () {
 
   mapPinMain.addEventListener('mousedown', onMapPinMainFirstMousdown);
 
-  mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
-  mapFilters.classList.add('map-filters--disabled');
   window.adForm.activate(false);
 
 
