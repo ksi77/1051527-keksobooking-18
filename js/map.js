@@ -54,15 +54,15 @@ window.map = (function () {
   function onLoadSuccess(data) {
     window.data.offers = data;
     window.map.renderPins(window.data.offers);
+    mapFilters.classList.remove('map-filters--disabled');
   }
 
   function activateElements() {
     if (window.data.mapBlock.classList.contains('map--faded')) {
       mapPinMainInitialCoordinate = new Coordinate(mapPinMain.style.left, mapPinMain.style.top);
       window.data.mapBlock.classList.remove('map--faded');
-      mapFilters.classList.remove('map-filters--disabled');
-      window.adForm.activate(true);
       window.backend.load(onLoadSuccess, window.messenger.onLoadError);
+      window.adForm.activate(true);
       mapPinMain.removeEventListener('mousedown', onMapPinMainFirstMousdown);
       mapPinMain.removeEventListener('keydown', onMapPinMainFirstKeydown);
       mapPinMain.addEventListener('mousedown', onMapPinMainMousdown);
