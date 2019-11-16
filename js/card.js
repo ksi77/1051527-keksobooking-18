@@ -27,22 +27,22 @@ window.card = (function () {
 
   function createFeaturesList(dataFeatures) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < dataFeatures.length; i++) {
+    dataFeatures.forEach(function (item) {
       var newFeature = document.createElement('li');
       newFeature.classList.add('popup__feature');
-      newFeature.classList.add('popup__feature--' + dataFeatures[i]);
+      newFeature.classList.add('popup__feature--' + item);
       fragment.appendChild(newFeature);
-    }
+    });
     return fragment;
   }
 
   function createPhotosList(photoTemplate, dataPhotos) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < dataPhotos.length; i++) {
+    dataPhotos.forEach(function (item) {
       var newPhoto = photoTemplate.cloneNode(true);
-      newPhoto.src = dataPhotos[i];
+      newPhoto.src = item;
       fragment.appendChild(newPhoto);
-    }
+    });
     return fragment;
   }
 
