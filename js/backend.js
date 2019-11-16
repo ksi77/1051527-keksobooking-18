@@ -5,7 +5,7 @@ window.backend = (function () {
   var GET_URL = 'https://js.dump.academy/keksobooking/data';
   var POST_URL = 'https://js.dump.academy/keksobooking';
 
-  function createXMLHttpRequest(metod, url, data, onSuccess, onError) {
+  function createXMLHttpRequest(method, url, data, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -27,7 +27,7 @@ window.backend = (function () {
 
     xhr.timeout = TIMEOUT;
 
-    xhr.open(metod, url);
+    xhr.open(method, url);
     xhr.send(data);
   }
 

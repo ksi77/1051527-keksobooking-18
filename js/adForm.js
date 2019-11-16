@@ -1,5 +1,5 @@
 'use strict';
-window.form = (function () {
+window.adForm = (function () {
   var adForm = window.data.adForm;
   var resetButton = adForm.querySelector('.ad-form__reset');
   var inputRoomNumber = adForm.querySelector('#room_number');
@@ -94,19 +94,17 @@ window.form = (function () {
     }
   }
 
-  function adFormReset() {
-    adForm.reset();
-    window.photo.reset();
-    setAddress(false);
-  }
-
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), window.messenger.onSaveSuccess, window.messenger.onSaveError);
   });
 
   resetButton.addEventListener('click', function () {
-    adFormReset();
+    window.map.totalReset();
+  });
+
+  resetButton.addEventListener('kewdown', function (evt) {
+    window.util.isEscEvent(evt, window.map.totalReset());
   });
 
   inputCapacity.addEventListener('change', function () {
@@ -133,25 +131,27 @@ window.form = (function () {
 
   setValidationCapacity();
   setValidationPrice();
-  setAddress();
+  setAddress(true);
 
   return {
     activate: function (active) {
       if (active) {
         adForm.classList.remove('ad-form--disabled');
+        window.adForm.setAddress(false);
       } else {
         adForm.classList.add('ad-form--disabled');
       }
-
-      for (var i = 0; i < arrayOfListsElements.length; i++) {
-        var currentList = arrayOfListsElements[i];
-        for (var j = 0; j < currentList.length; j++) {
-          currentList[j].disabled = !active;
-        }
-      }
+      arrayOfListsElements.forEach(function (currentArray) {
+        currentArray.forEach(function (element) {
+          element.disabled = !active;
+        });
+      });
     },
 
-    reset: adFormReset,
+    reset: function () {
+      adForm.reset();
+      window.photo.reset();
+    },
 
     setAddress: setAddress
   };

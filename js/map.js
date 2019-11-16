@@ -7,7 +7,6 @@ window.map = (function () {
   var mapPinSize = window.data.MapPinSize;
   var mapPinMainInitialCoordinate = '';
 
-
   var DefinitionArea = {
     LEFT: 1,
     TOP: 130,
@@ -38,6 +37,10 @@ window.map = (function () {
   function resetMainPin() {
     mapPinMain.style.left = mapPinMainInitialCoordinate.x;
     mapPinMain.style.top = mapPinMainInitialCoordinate.y;
+    window.adForm.setAddress(true);
+    mapPinMain.removeEventListener('mousedown', onMapPinMainMousdown);
+    mapPinMain.addEventListener('mousedown', onMapPinMainFirstMousdown);
+    mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
   }
 
   function clearPins() {
@@ -58,8 +61,7 @@ window.map = (function () {
       mapPinMainInitialCoordinate = new Coordinate(mapPinMain.style.left, mapPinMain.style.top);
       window.data.mapBlock.classList.remove('map--faded');
       mapFilters.classList.remove('map-filters--disabled');
-      window.form.activate(true);
-      window.form.setAddress(false);
+      window.adForm.activate(true);
       window.backend.load(onLoadSuccess, window.messenger.onLoadError);
       mapPinMain.removeEventListener('mousedown', onMapPinMainFirstMousdown);
       mapPinMain.removeEventListener('keydown', onMapPinMainFirstKeydown);
@@ -103,7 +105,7 @@ window.map = (function () {
 
       mapPinMain.style.left = pinCoords.x + 'px';
       mapPinMain.style.top = pinCoords.y + 'px';
-      window.form.setAddress(false);
+      window.adForm.setAddress(false);
 
     };
 
@@ -130,7 +132,7 @@ window.map = (function () {
 
   mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
 
-  window.form.activate(false);
+  window.adForm.activate(false);
 
 
   return {
@@ -148,13 +150,11 @@ window.map = (function () {
     totalReset: function () {
       window.data.mapBlock.classList.add('map--faded');
       mapFilters.classList.add('map-filters--disabled');
-      window.form.activate(false);
       clearPins();
+      mapFilters.reset();
+      window.adForm.reset();
       resetMainPin();
-      window.form.reset();
-      window.form.setAddress(true);
-      mapPinMain.addEventListener('mousedown', onMapPinMainFirstMousdown);
-      mapPinMain.addEventListener('keydown', onMapPinMainFirstKeydown);
+      window.adForm.activate(false);
     },
   };
 })();
