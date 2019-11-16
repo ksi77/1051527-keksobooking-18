@@ -70,5 +70,14 @@ window.filter = (function () {
     var filterElement = window.data.mapBlock.querySelector('#' + key);
     filterElement.addEventListener('change', onFilterFieldChange);
     filters.push(filterElement);
+    filterElement.disabled = true;
   });
+
+  return {
+    activate: function (active) {
+      filters.forEach(function (item) {
+        item.disabled = !active;
+      });
+    }
+  };
 })();

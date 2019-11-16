@@ -54,7 +54,7 @@ window.map = (function () {
   function onLoadSuccess(data) {
     window.data.offers = data;
     window.map.renderPins(window.data.offers);
-    mapFilters.classList.remove('map-filters--disabled');
+    window.filter.activate(true);
   }
 
   function activateElements() {
@@ -147,12 +147,12 @@ window.map = (function () {
 
     totalReset: function () {
       window.data.mapBlock.classList.add('map--faded');
-      mapFilters.classList.add('map-filters--disabled');
       clearPins();
       mapFilters.reset();
       window.adForm.reset();
       resetMainPin();
       window.adForm.activate(false);
-    },
+      window.filters.activate(false);
+    }
   };
 })();
