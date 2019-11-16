@@ -151,6 +151,7 @@ window.adForm = (function () {
     reset: function () {
       adForm.reset();
       window.photo.reset();
+      setValidationPrice();
     },
 
     setAddress: setAddress
