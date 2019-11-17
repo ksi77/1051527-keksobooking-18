@@ -152,7 +152,7 @@ window.map = (function () {
       window.adForm.reset();
       resetMainPin();
       window.adForm.activate(false);
-      window.filters.activate(false);
+      window.filter.activate(false);
     }
   };
 })();

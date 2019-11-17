@@ -57,6 +57,8 @@ window.adForm = (function () {
     }
     if (inputCapacity.selectedOptions[0].disabled) {
       inputCapacity.setCustomValidity('Выберите доступное количество гостей');
+    } else {
+      inputCapacity.setCustomValidity(''); // для reset
     }
   }
 
@@ -152,6 +154,7 @@ window.adForm = (function () {
       adForm.reset();
       window.photo.reset();
       setValidationPrice();
+      setValidationCapacity();
     },
 
     setAddress: setAddress
